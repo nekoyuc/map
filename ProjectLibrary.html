@@ -44,32 +44,234 @@
         const flairNodeSize = 6;
         const hoveredFlairNodeSize = 8;
 
+        // Set node and link flair styles
+        const nodeNormalOpacity = 1;
+        const nodeDisconnectedOpacity = 0.1;
+        const linkNormalOpacity = 0.4;
+        const linkNormalWidth = 2;
+        const linkDisconnectedOpacity = 0.1;
+        const linkConnectedOpacity = 0.7;
+        const linkConnectedWidth = 3;
+
         // Set node label display extent
         const nodeLabelDisplayExtent = 1.8;
 
+        // Set toggles
         let lastHoveredColor = null;
+        let lastClickedButtonIcon = null;
+        let descripToggle = false;
+
+        // Load data using FileAttachment
+        const response = await fetch("ProjectLibrary_data.json");
+        const data = await response.json();
+
+        console.log(data);
+        console.log(data.links);
+
+        // Compute the graph and start the force simulation.
+        const nodes = data.nodes;
+        const links = data.links;
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.5))
+            .force("charge", d3.forceManyBody().strength(-100))
+            .force("x", d3.forceX())
+            .force("y", d3.forceY());
+
+        // Function to handle drag events
+        const drag = (simulation) => {
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+
+        // Create the container SVG.
+        const svg = d3.create("svg")
+            .attr("width", chartWidth)
+            .attr("height", chartHeight)
+            .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
+            .attr("style", "max-width: 100%; height: auto;")
+            .call(d3.zoom().on("zoom", zoomed));
+
+        // Append link elements.
+        const link = svg.append("g")
+            .attr("stroke-opacity", linkNormalOpacity)
+            .selectAll("line")
+            .data(links)
+            .join("line")
+            .attr("stroke", d => d.group === "___is the author of___" ? authorLinkColor : (d.group === "___is the location of___" ? locationLinkColor : (d.group === "___is the flair of___" ? flairLinkColor : otherLinkColor)))
+            .attr("stroke-width", linkNormalWidth);
+
+        // Append node elements.
+        const node = svg.append("g")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 0.6)
+            .selectAll("circle")
+            .data(nodes)
+            .join("circle")
+            .attr("fill", d => {
+                if (d.type === "Locations") {
+                    return locationsColor;
+                } else if (d.type === "Architecture") {
+                    return architectureColor
+                } else if (d.type === "Flairs") {
+                    return flairsColor;
+                } else if (d.type === "Companies/Individuals") {
+                    return companiesIndividualsColor;
+                } else if (d.type === "Visuals") {
+                    return visualsColor;
+                } else if (d.type === "Audio") {
+                    return audioColor;
+                } else {
+                    return otherColor;
+                }
+            }
+            )
+            .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
+            .call(drag(simulation))
+
+        // Append node labels.
+        const nodeLabels = svg.append("g")
+            .attr("class", "node-labels")
+            .selectAll("text")
+            .data(nodes)
+            .join("text")
+            .attr("class", "node-label")
+            .attr("text-anchor", "middle")
+            .attr("dy", "-0.35em")
+            .attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
+            .attr("font-family", "Futura Bk BT") // Set the font family to "helvetica
+            .attr("font-weight", "bold") // Set the text to bold
+            .attr("label-id", d => d.id) // Add the attribute "id" with the value of the node's id
+            .text(d => d.name)
+            .style("display", "none")
+
+        // Function to handle zoom event
+        function zoomed(event) {
+            const { transform } = event;
+            const mouseX = event.sourceEvent.offsetX - chartWidth / 2;
+            const mouseY = event.sourceEvent.offsetY - chartHeight / 2;
+            const scale = transform.k;
+            const translateX = -mouseX * (scale - 1);
+            const translateY = -mouseY * (scale - 1);
+            svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
+            nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
+        }
+
+        // Set the maximum zoom-out extent
+        const zoom = d3.zoom()
+            .scaleExtent([1, 6])
+            .on("zoom", zoomed);
+
+        // Append the description window.
+        const descripWindow = d3.select("body")
+            .append("div")
+            .attr("class", "description-window")
+            .attr("window-id", "none")
+            .attr("window-name", "none")
+            .attr("window-url", "none")
+            .attr("window-type", "none")
+            .attr("window-description", "none")
+            .style("position", "absolute")
+            .style("display", "none")
+            .style("width", `${descripWidth}px`)
+            .style("height", `${descripHeight}px`)
+            .style("border", "1px solid #000")
+            .style("border-radius", "5px")
+            .style("background-color", "#fff")
+            .style("z-index", "100");
+        const descripContent = descripWindow.append("div")
+            .attr("class", "description-content")
+            .style("padding", "10px")
+            .style("word-wrap", "break-word")
+            .style("max-width", "100%") // Set the maximum width to 100%
+            .style("z-index", "100");
+
+        // Append buttons for nodes with type Flair
+        const flairButtonsContainer = d3.select("body")
+            .insert("div", "svg")
+            .attr("class", "buttons-container")
+            .style("position", "absolute")
+            .style("pointer-events", "none")
+            .style("top", "0")
+            .style("left", "0")
+            .style("width", `${chartWidth}px`)
+            .style("height", `${chartHeight}px`)
+            .style("z-index", "999"); // Set the z-index to make it always in front of the chart
+        const flairButtons = flairButtonsContainer.selectAll("button")
+            .data(nodes.filter(d => d.type === "Flairs"))
+            .join("button")
+            .text(d => d.name)
+            .attr("icon", d => d.name) // Set the name attribute to the node name
+            .style("pointer-events", "auto")
+            .on("click", flairClick);
+        function flairClick(d) {
+            node.attr("opacity", nodeNormalOpacity);
+            link.attr("stroke-opacity", linkNormalOpacity);
+            link.attr("stroke-width", linkNormalWidth);
+
+            // If the button is clicked again, clear the filter
+            if (d3.select(this).attr("icon") === lastClickedButtonIcon) {
+                lastClickedButtonIcon = null;
+            } else {
+                const selectedNode = node.filter(nodeData => nodeData.name === d3.select(this).attr("icon"));
+
+                const connectingLinks = link.filter(linkData => linkData.source.name === d3.select(this).attr("icon") || linkData.target.name === d3.select(this).attr("icon"));
+                connectingLinks.attr("stroke-opacity", linkConnectedOpacity);
+                connectingLinks.attr("stroke-width", linkConnectedWidth);
+
+                const disconnectedLinks = link.filter(linkData => linkData.source.name !== d3.select(this).attr("icon") && linkData.target.name !== d3.select(this).attr("icon"));
+                disconnectedLinks.attr("stroke-opacity", linkDisconnectedOpacity);
+
+                const disconnectedNodes = node.filter(nodeData => {
+                    const connectedNodes = connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]);
+                    return !connectedNodes.some(connectedNode => connectedNode.name === nodeData.name);
+                });
+                disconnectedNodes.attr("opacity", nodeDisconnectedOpacity);
+
+                // Update the last clicked button icon
+                lastClickedButtonIcon = d3.select(this).attr("icon");
+            }
+        }
+
+        // Append a button to clear all hihglighted nodes
+        const clearButton = flairButtonsContainer.append("button")
+            .text("Clear Filter")
+
+            // Move the button to the right by 5px
+            .style("position", "absolute")
+            .style("top", "5px")
+            .style("right", "-100px")
+
+            .style("pointer-events", "auto")
+            .on("click", () => {
+                node.attr("opacity", 1);
+
+                link.attr("stroke-width", 2);
+                link.attr("stroke-opacity", 0.4);
+                lastClickedButtonIcon = null;
+            });
+
+
 
 
         // Function to create the force-directed graph
         const createForceDirectedGraph = (data) => {
-            // Compute the graph and start the force simulation.
-            const nodes = data.nodes;
-            const links = data.links;
-
-            const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.5))
-                .force("charge", d3.forceManyBody().strength(-100))
-                .force("x", d3.forceX())
-                .force("y", d3.forceY());
-
-            // Create the container SVG.
-            const svg = d3.create("svg")
-                .attr("width", chartWidth)
-                .attr("height", chartHeight)
-                .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
-                .attr("style", "max-width: 100%; height: auto;")
-                .call(d3.zoom().on("zoom", zoomed));
-
             // Append a rectangle as the boundary line.
             svg.append("rect")
                 .attr("x", -chartWidth / 2)
@@ -79,84 +281,23 @@
                 .attr("stroke", "#999")
                 .attr("stroke-width", 1)
                 .attr("fill", "none");
-
-            // Append links.
-            const link = svg.append("g")
-                .attr("stroke-opacity", 0.4)
-                .selectAll("line")
-                .data(links)
-                .join("line")
-                .attr("stroke", d => d.group === "___is the author of___" ? authorLinkColor : (d.group === "___is the location of___" ? locationLinkColor : (d.group === "___is the flair of___" ? flairLinkColor : otherLinkColor)))
-                .attr("stroke-width", 2);
-
-            // Append nodes.
-            const node = svg.append("g")
-                .attr("stroke", "#fff")
-                .attr("stroke-width", 0.6)
-                .selectAll("circle")
-                .data(nodes)
-                .join("circle")
-                .attr("fill", d => {
-                    if (d.type === "Locations") {
-                        return locationsColor;
-                    } else if (d.type === "Architecture") {
-                        return architectureColor
-                    } else if (d.type === "Flairs") {
-                        return flairsColor;
-                    } else if (d.type === "Companies/Individuals") {
-                        return companiesIndividualsColor;
-                    } else if (d.type === "Visuals") {
-                        return visualsColor;
-                    } else if (d.type === "Audio") {
-                        return audioColor;
-                    } else {
-                        return otherColor;
-                    }
-                }
-                )
-                .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
-                .call(drag(simulation))
-                .on("mouseover", handleMouseOver)
+            // Mouseover and mouseout event handlers for nodes
+            node.on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut);
-
-            node.append("title")
-                .text(d => d.name);
-
-            // Append node labels.
-            const nodeLabels = svg.append("g")
-                .attr("class", "node-labels")
-                .selectAll("text")
-                .data(nodes)
-                .join("text")
-                .attr("class", "node-label")
-                .attr("text-anchor", "middle")
-                .attr("dy", "-0.35em")
-                .attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
-                .attr("font-family", "Futura Bk BT") // Set the font family to "helvetica
-                .attr("font-weight", "bold") // Set the text to bold
-                .attr("label-id", d => d.id) // Add the attribute "id" with the value of the node's id
-                .text(d => d.name)
-                .style("display", "none");
-
+            // Function to handle tick events.
             simulation.on("tick", () => {
                 node
                     .attr("cx", d => d.x)
                     .attr("cy", d => d.y)
-
-
                 link
                     .attr("x1", d => d.source.x)
                     .attr("y1", d => d.source.y)
                     .attr("x2", d => d.target.x)
                     .attr("y2", d => d.target.y);
-
                 nodeLabels
                     .attr("x", d => d.x)
                     .attr("y", d => d.y)
-                //.style("display", d => d3.zoomTransform(svg.node()).k >= nodeLabelDisplayExtent ? "block" : "none");
             });
-
-
 
             // Function to handle mouseover event
             function handleMouseOver(event, d) {
@@ -219,167 +360,15 @@
                 // Remove the buttons from the description window
             }
 
-            // Function to handle zoom event
-            function zoomed(event) {
-                const { transform } = event;
-                const mouseX = event.sourceEvent.offsetX - chartWidth / 2;
-                const mouseY = event.sourceEvent.offsetY - chartHeight / 2;
-                const scale = transform.k;
-                const translateX = -mouseX * (scale - 1);
-                const translateY = -mouseY * (scale - 1);
-
-                svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
-
-                nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
-            }
-
-            // Set the maximum zoom-out extent
-            const zoom = d3.zoom()
-                .scaleExtent([1, 6])
-                .on("zoom", zoomed);
-
             // Append the SVG to the body
             document.body.appendChild(svg.node());
 
-            // Append the description window.
-            const descripWindow = d3.select("body")
-                .append("div")
-                .attr("class", "description-window")
-                .attr("window-id", "none")
-                .attr("window-name", "none")
-                .attr("window-url", "none")
-                .attr("window-type", "none")
-                .attr("window-description", "none")
-                .style("position", "absolute")
-                .style("display", "none")
-                .style("width", `${descripWidth}px`)
-                .style("height", `${descripHeight}px`)
-                .style("border", "1px solid #000")
-                .style("border-radius", "5px")
-                .style("background-color", "#fff");
-
-            const descripContent = descripWindow.append("div")
-                .attr("class", "description-content")
-                .style("padding", "10px")
-                .style("word-wrap", "break-word")
-                .style("max-width", "100%"); // Set the maximum width to 100%
-
-            // Mouse click toggle for description window
-            let descripToggle = false;
             svg.on("click", () => {
                 descripToggle = !descripToggle;
             });
 
             // Call the zoom function on the SVG
             svg.call(zoom);
-
-            // Append buttons for nodes with type 1
-            const flairButtonsContainer = d3.select("body")
-                .insert("div", "svg")
-                .attr("class", "buttons-container")
-                .style("position", "absolute")
-                .style("pointer-events", "none")
-                .style("top", "0")
-                .style("left", "0")
-                .style("width", `${chartWidth}px`)
-                .style("height", `${chartHeight}px`)
-                .style("z-index", "999"); // Set the z-index to make it always in front of the chart
-
-            const flairButtons = flairButtonsContainer.selectAll("button")
-                .data(nodes.filter(d => d.type === "Flairs"))
-                .join("button")
-                .text(d => d.name)
-                .attr("icon", d => d.name) // Set the name attribute to the node name
-                .style("pointer-events", "auto")
-                .on("click", flairClick);
-
-            // Create a const to track the "icon" of the last button that was clicked on
-            let lastClickedButtonIcon = null;
-
-            function flairClick(d) {
-
-                node.attr("opacity", 1);
-                node.attr("fill", d => {
-                    if (d.type === "Locations") {
-                        return locationsColor;
-                    } else if (d.type === "Architecture") {
-                        return architectureColor
-                    } else if (d.type === "Flairs") {
-                        return flairsColor;
-                    } else if (d.type === "Companies/Individuals") {
-                        return companiesIndividualsColor;
-                    } else if (d.type === "Visuals") {
-                        return visualsColor;
-                    } else if (d.type === "Audio") {
-                        return audioColor;
-                    } else {
-                        return otherColor;
-                    }
-                });
-                // node.attr("fill", "#fff");
-                link.attr("stroke-opacity", 0.4);
-                link.attr("stroke-width", 2);
-
-                // If the button clicked on is the same as the last button clicked on, turn all nodes back to black
-                if (d3.select(this).attr("icon") === lastClickedButtonIcon) {
-                    lastClickedButtonIcon = null;
-                } else {
-                    const selectedNode = node.filter(nodeData => nodeData.name === d3.select(this).attr("icon"));
-                    // selectedNode.attr("fill", "red");
-
-                    const connectingLinks = link.filter(linkData => linkData.source.name === d3.select(this).attr("icon") || linkData.target.name === d3.select(this).attr("icon"));
-                    connectingLinks.attr("stroke-opacity", 0.7);
-                    connectingLinks.attr("stroke-width", 3);
-
-                    const disconnectedLinks = link.filter(linkData => linkData.source.name !== d3.select(this).attr("icon") && linkData.target.name !== d3.select(this).attr("icon"));
-                    disconnectedLinks.attr("stroke-opacity", 0.1);
-
-                    // Find all connected nodes
-                    const disconnectedNodes = node.filter(nodeData => {
-                        const connectedNodes = connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]);
-                        return !connectedNodes.some(connectedNode => connectedNode.name === nodeData.name);
-                    });
-                    disconnectedNodes.attr("opacity", 0.1);
-
-                    // Update the last clicked button icon
-                    lastClickedButtonIcon = d3.select(this).attr("icon");
-                }
-            }
-
-            // Append a button to clear all hihglighted nodes
-            const clearButton = flairButtonsContainer.append("button")
-                .text("Clear Filter")
-
-                // Move the button to the right by 5px
-                .style("position", "absolute")
-                .style("top", "5px")
-                .style("right", "-100px")
-
-                .style("pointer-events", "auto")
-                .on("click", () => {
-                    node.attr("fill", d => {
-                        if (d.type === "Locations") {
-                            return locationsColor;
-                        } else if (d.type === "Architecture") {
-                            return architectureColor
-                        } else if (d.type === "Flairs") {
-                            return flairsColor;
-                        } else if (d.type === "Companies/Individuals") {
-                            return companiesIndividualsColor;
-                        } else if (d.type === "Visuals") {
-                            return visualsColor;
-                        } else if (d.type === "Audio") {
-                            return audioColor;
-                        } else {
-                            return otherColor;
-                        }
-                    });
-                    node.attr("opacity", 1);
-
-                    link.attr("stroke-width", 2);
-                    link.attr("stroke-opacity", 0.4);
-                    lastClickedButtonIcon = null;
-                });
 
             // Function to handle button 1 click event
             function handleEditButtonClick() {
@@ -530,51 +519,16 @@
                         saveButton.remove();
                         backButton.remove();
                     });
-
             }
 
             // Function to handle button 2 click event
             function handleDeleteButtonClick() {
                 // Add your code here
             }
-
-        }
-
-        // Load data using FileAttachment
-        const response = await fetch("ProjectLibrary_data.json");
-        const data = await response.json();
-
-        console.log(data);
-        console.log(data.links);
-
-        // Function to handle drag events
-        const drag = (simulation) => {
-            function dragstarted(event, d) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-
-            function dragged(event, d) {
-                d.fx = event.x;
-                d.fy = event.y;
-            }
-
-            function dragended(event, d) {
-                if (!event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }
-
-            return d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended);
         }
 
         // Call the function with the loaded data
         createForceDirectedGraph(data);
     </script>
 </head>
-
 </html>
