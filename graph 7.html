@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force-Directed Graph</title>
+    <script src="d3.v7.min.js"></script>
+    <script type="module">
+
+        // Function to create the force-directed graph
+        const createForceDirectedGraph = (data) => {
+            // Specify the chart’s dimensions.
+            const chartWidth = 1200;
+            const chartHeight = 800;
+            const descriptionWidth = 800;
+            const descriptionHeight = 600;
+            const descriptionOffsetX = 50; // Offset the description window horizontally
+            const descriptionOffsetY = -50; // Offset the description window vertically
+
+            // Compute the graph and start the force simulation.
+            const nodes = data.nodes;
+            const links = data.links;
+
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.name).distance(70).strength(1))
+                .force("charge", d3.forceManyBody().strength(-50))
+                .force("x", d3.forceX())
+                .force("y", d3.forceY());
+
+            // Create the container SVG.
+            const svg = d3.create("svg")
+                .attr("width", chartWidth)
+                .attr("height", chartHeight)
+                .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
+                .attr("style", "max-width: 100%; height: auto;")
+                .call(d3.zoom().on("zoom", zoomed));
+
+            // Append a rectangle as the boundary line.
+            svg.append("rect")
+                .attr("x", -chartWidth / 2)
+                .attr("y", -chartHeight / 2)
+                .attr("width", chartWidth)
+                .attr("height", chartHeight)
+                .attr("stroke", "#999")
+                .attr("stroke-width", 1)
+                .attr("fill", "none");
+
+            // Append links.
+            const link = svg.append("g")
+                .attr("stroke-opacity", 0.4)
+                .selectAll("line")
+                .data(links)
+                .join("line")
+                .attr("stroke", d => d.group === 1 ? "red" : (d.group === 2 ? "blue" : "none")) // Set different colors based on "group" attribute
+                .attr("style", d => d.group === 2 ? "display: none;" : ""); // Hide links with group 2 initially
+
+            // Append nodes.
+            const node = svg.append("g")
+                .attr("fill", "#fff")
+                .attr("stroke", "#000")
+                .attr("stroke-width", 1.5)
+                .selectAll("circle")
+                .data(nodes)
+                .join("circle")
+                .attr("r", 7)
+                .call(drag(simulation))
+                .on("mouseover", handleMouseOver)
+                .on("mouseout", handleMouseOut);
+
+            node.append("title")
+                .text(d => d.name);
+
+            // Append node labels.
+            const nodeLabels = svg.append("g")
+                .attr("class", "node-labels")
+                .selectAll("text")
+                .data(nodes)
+                .join("text")
+                .attr("class", "node-label")
+                .attr("text-anchor", "middle")
+                .attr("dy", "-0.5em")
+                .attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
+                .attr("font-family", "helvetica") // Set the font family to "helvetica
+                .attr("fill", "#19A") // Set the text color to green blue
+                .attr("font-weight", "bold") // Set the text to bold
+                .text(d => d.name)
+                .style("display", "none");
+
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                nodeLabels
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y)
+                    .style("display", d => d3.zoomTransform(svg.node()).k >= 3 ? "block" : "none");
+            });
+
+            let lastHoveredColor = null;
+
+            // Function to handle mouseover event
+            function handleMouseOver(event, d) {
+                lastHoveredColor = d3.select(this).attr("fill");
+
+                d3.select(this)
+                    .attr("r", 12)
+                    .attr("fill", "#808080");
+
+                simulation.stop(); // Pause the simulation
+
+                // Display the description window
+                descriptionWindow.style("display", "block");
+                descriptionWindow.style("top", `${event.pageY + descriptionOffsetY}px`);
+                descriptionWindow.style("left", `${event.pageX + descriptionOffsetX}px`);
+
+                // Set the description content to include both "value" and "url" attributes if "url" exists
+                let descriptionContentHtml = `<strong>Value:</strong> ${d.value}`;
+                if (d.url) {
+                    descriptionContentHtml += `<br><strong>URL:</strong> <a href="${d.url}" target="_blank">${d.url}</a>`;
+                    descriptionContentHtml += `<br><iframe src="${d.url}" width="100%" height=400px></iframe>`;
+                }
+                descriptionContent.html(descriptionContentHtml);
+            }
+
+            // Function to handle mouseout event
+            function handleMouseOut(event, d) {
+                d3.select(this)
+                    .attr("r", 7)
+                    .attr("fill", lastHoveredColor);
+
+                simulation.restart(); // Resume the simulation
+
+                if (!descriptionToggle) {
+                    descriptionWindow.style("display", "none");
+                }
+
+                descriptionToggle = false;
+            }
+
+            // Function to handle zoom event
+            function zoomed(event) {
+                const { transform } = event;
+                const mouseX = event.sourceEvent.offsetX - chartWidth / 2;
+                const mouseY = event.sourceEvent.offsetY - chartHeight / 2;
+                const scale = transform.k;
+                const translateX = -mouseX * (scale - 1);
+                const translateY = -mouseY * (scale - 1);
+
+                svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
+
+                nodeLabels.style("display", d => transform.k >= 2 ? "block" : "none");
+                node.attr("stroke-width", 1.5 / transform.k);
+
+                // Show/hide links with group 2 based on scale extent
+                link.attr("style", d => (d.group === 2 && transform.k <= 1.5) ? "display: none;" : "");
+            }
+
+            // Set the maximum zoom-out extent
+            const zoom = d3.zoom()
+                .scaleExtent([1, 4])
+                .on("zoom", zoomed);
+
+            // Append the SVG to the body
+            document.body.appendChild(svg.node());
+
+            // Append the description window.
+            const descriptionWindow = d3.select("body")
+                .append("div")
+                .attr("class", "description-window")
+                .style("position", "absolute")
+                .style("display", "none")
+                .style("width", `${descriptionWidth}px`)
+                .style("height", `${descriptionHeight}px`)
+                .style("border", "1px solid #000")
+                .style("border-radius", "5px")
+                .style("background-color", "#fff");
+
+            const descriptionContent = descriptionWindow.append("div")
+                .attr("class", "description-content")
+                .style("padding", "10px")
+                .style("word-wrap", "break-word")
+                .style("max-width", "100%"); // Set the maximum width to 100%
+
+            // Mouse click toggle for description window
+            let descriptionToggle = false;
+            svg.on("click", () => {
+                descriptionToggle = !descriptionToggle;
+            });
+
+            // Call the zoom function on the SVG
+            svg.call(zoom);
+
+            // Append buttons for nodes with type 1
+            const buttonsContainer = d3.select("body")
+                .insert("div", "svg")
+                .attr("class", "buttons-container")
+                .style("position", "absolute")
+                .style("pointer-events", "none")
+                .style("top", "0")
+                .style("left", "0")
+                .style("width", `${chartWidth}px`)
+                .style("height", `${chartHeight}px`)
+                .style("z-index", "999"); // Set the z-index to make it always in front of the chart
+
+            const buttons = buttonsContainer.selectAll("button")
+                .data(nodes.filter(d => d.type === 1))
+                .join("button")
+                .text(d => d.name)
+                .attr("icon", d => d.name) // Set the name attribute to the node name
+                .style("pointer-events", "auto")
+                .on("click", handleClick);
+
+            // Create a const to track the "icon" of the last button that was clicked on
+            let lastClickedButtonIcon = null;
+
+            function handleClick(d) {
+
+                node.attr("fill", "#fff");
+                link.attr("stroke-opacity", 0.4);
+
+                // If the button clicked on is the same as the last button clicked on, turn all nodes back to black
+                if (d3.select(this).attr("icon") === lastClickedButtonIcon) {
+                    lastClickedButtonIcon = null;
+                } else {
+                    const selectedNode = node.filter(nodeData => nodeData.name === d3.select(this).attr("icon"));
+                    selectedNode.attr("fill", "#DDDDDD");
+
+                    const connectedNodes = links.filter(linkData => linkData.source.name === d3.select(this).attr("icon") || linkData.target.name === d3.select(this).attr("icon"));
+                    connectedNodes.forEach(linkData => {
+                        const connectedNode = node.filter(nodeData => nodeData.name === linkData.source.name || nodeData.name === linkData.target.name);
+                        connectedNode.attr("fill", "#DDDDDD");
+                    });
+
+                    // Select links that are connected to the selected node
+                    const connectedLinks = links.filter(linkData => linkData.source.name === d3.select(this).attr("icon") || linkData.target.name === d3.select(this).attr("icon"));
+                    connectedLinks.forEach(linkData => {
+                        const connectedLink = link.filter(linkData => linkData.source.name === d3.select(this).attr("icon") || linkData.target.name === d3.select(this).attr("icon"));
+                        connectedLink.attr("stroke-opacity", 0.7);
+                    });
+
+                    // Update the last clicked button icon
+                    lastClickedButtonIcon = d3.select(this).attr("icon");
+                }
+            }
+
+            // Append a button to clear all hihglighted nodes
+            const clearButton = buttonsContainer.append("button")
+                .text("Clear Icons")
+
+                // Move the button to the right by 5px
+                .style("position", "absolute")
+                .style("top", "5px")
+                .style("right", "5px")
+                
+                .style("pointer-events", "auto")
+                .on("click", () => {
+                    node.attr("fill", "#fff");
+                    link.attr("stroke-opacity", 0.4);
+                    lastClickedButtonIcon = null;
+                });
+        }
+
+        // Load data using FileAttachment
+        const response = await fetch("data7.json");
+        const data = await response.json();
+
+
+        // Function to handle drag events
+        const drag = (simulation) => {
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+
+        // Call the function with the loaded data
+        createForceDirectedGraph(data);
+    </script>
+</head>
+
+</html>

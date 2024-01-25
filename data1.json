@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "label": "Note 1",
+      "content": "This is the content of Note 1."
+    },
+    {
+      "id": 2,
+      "label": "Note 2",
+      "content": "Content of Note 2 goes here."
+    },
+    {
+      "id": 3,
+      "label": "Note 3",
+      "content": "Here is the content of Note 3."
+    }
+  ],
+  "edges": [
+    {
+      "id": 101,
+      "source": 1,
+      "target": 2,
+      "label": "Connects Note 1 to Note 2"
+    },
+    {
+      "id": 102,
+      "source": 2,
+      "target": 3,
+      "label": "Connects Note 2 to Note 3"
+    },
+    {
+      "id": 103,
+      "source": 3,
+      "target": 1,
+      "label": "Connects Note 3 back to Note 1"
+    }
+  ]
+}

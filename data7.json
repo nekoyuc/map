@@ -1,0 +1,128 @@
+{
+    "nodes": [
+        {
+            "name": "flare",
+            "type": 1
+        },
+        {
+            "name": "analytics",
+            "type": 1
+        },
+        {
+            "name": "cluster",
+            "type": 1
+        },
+        {
+            "name": "AgglomerativeCluster",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 1
+        },
+        {
+            "name": "CommunityStructure",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 1
+        },
+        {
+            "name": "HierarchicalCluster",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 1
+        },
+        {
+            "name": "MergeEdge",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 1
+        },
+        {
+            "name": "graph",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 1
+        },
+        {
+            "name": "BetweennessCentrality",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 2
+        },
+        {
+            "name": "LinkDistance",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 2
+        },
+        {
+            "name": "MaxFlowMinCut",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 2
+        },
+        {
+            "name": "ShortestPaths",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 2
+        },
+        {
+            "name": "SpanningTree",
+            "url": "https://minecraft.fandom.com/wiki/Pointed_Dripstone",
+            "type": 2
+        }
+    ],
+    "links": [
+        {
+            "source": "flare",
+            "target": "analytics",
+            "group": 1
+        },
+        {
+            "source": "flare",
+            "target": "cluster",
+            "group": 1
+        },
+        {
+            "source": "flare",
+            "target": "graph",
+            "group": 1
+        },
+        {
+            "source": "cluster",
+            "target": "AgglomerativeCluster",
+            "group": 1
+        },
+        {
+            "source": "cluster",
+            "target": "CommunityStructure",
+            "group": 1
+        },
+        {
+            "source": "cluster",
+            "target": "HierarchicalCluster",
+            "group": 1
+        },
+        {
+            "source": "cluster",
+            "target": "MergeEdge",
+            "group": 1
+        },
+        {
+            "source": "graph",
+            "target": "BetweennessCentrality",
+            "group": 2
+        },
+        {
+            "source": "graph",
+            "target": "LinkDistance",
+            "group": 2
+        },
+        {
+            "source": "graph",
+            "target": "MaxFlowMinCut",
+            "group": 2
+        },
+        {
+            "source": "graph",
+            "target": "ShortestPaths",
+            "group": 2
+        },
+        {
+            "source": "graph",
+            "target": "SpanningTree",
+            "group": 2
+        }
+    ]
+}

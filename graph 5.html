@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <svg id="chart"></svg>
+
+    <script>
+        // Load data from CSV file
+        d3.csv('data5.csv').then(data => {
+            // Extract labels and values from data
+            const labels = data.map(d => d.label);
+            const values = data.map(d => parseFloat(d.value));
+
+            // Set up chart dimensions
+            const width = 500;
+            const height = 300;
+            const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+
+            // Create SVG element
+            const svg = d3.select('#chart')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create chart group
+            const chart = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            // Create x and y scales
+            const xScale = d3.scaleBand()
+                .domain(labels)
+                .range([0, chartWidth])
+                .padding(0.1);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(values)])
+                .range([chartHeight, 0]);
+
+            // Create x and y axes
+            const xAxis = d3.axisBottom(xScale);
+            const yAxis = d3.axisLeft(yScale);
+
+            // Add x axis to chart
+            chart.append('g')
+                .attr('transform', `translate(0, ${chartHeight})`)
+                .call(xAxis);
+
+            // Add y axis to chart
+            chart.append('g')
+                .call(yAxis);
+
+            // Create bars
+            chart.selectAll('.bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar')
+                .attr('x', d => xScale(d.label))
+                .attr('y', d => yScale(d.value))
+                .attr('width', xScale.bandwidth())
+                .attr('height', d => chartHeight - yScale(d.value))
+                .attr('fill', 'steelblue');
+        });
+    </script>
+</body>
+</html>

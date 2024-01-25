@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Network Graph</title>
+    <style>
+        #network-container {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/vis-network/standalone/umd/vis-network.min.css">
+</head>
+<body>
+    <div id="network-container"></div>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Sample data for nodes and edges
+            var nodes = new vis.DataSet([
+                { id: 1, label: 'Node 1' },
+                { id: 2, label: 'Node 2' },
+                { id: 3, label: 'Node 3' },
+                { id: 4, label: 'Node 4' }
+            ]);
+
+            var edges = new vis.DataSet([
+                { from: 1, to: 2 },
+                { from: 1, to: 3 },
+                { from: 2, to: 4 },
+                { from: 3, to: 4 }
+            ]);
+
+            // Create a new network instance
+            var container = document.getElementById('network-container');
+            var data = { nodes: nodes, edges: edges };
+            var options = {};
+            var network = new vis.Network(container, data, options);
+        });
+    </script>
+</body>
+</html>
