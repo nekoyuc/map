@@ -1,0 +1,112 @@
+{
+    "nodes": [
+        {
+            "id": "City Pattern",
+            "name": "City Pattern",
+            "url": "https://www.idflood.com/2019/03/city-pattern/",
+            "type": "Visuals",
+            "description": ""
+        },
+        {
+            "id": "David Mignot",
+            "name": "David Mignot",
+            "url": "https://www.idflood.com/",
+            "type": "Companies/Individuals",
+            "description": ""
+        },
+        {
+            "id": "Natural artifact",
+            "name": "Natural artifact",
+            "url": "https://knownorigin.io/gallery/226325-natural-artifact",
+            "type": "Visuals",
+            "description": ""
+        },
+        {
+            "id": "digital art",
+            "name": "digital artsss",
+            "type": "Flairs",
+            "description": ""
+        },
+        {
+            "id": "Zaha Hadid",
+            "name": "Zaha Hadid",
+            "type": "Companies/Individuals",
+            "description": ""
+        },
+        {
+            "id": "Morpheus Hotel",
+            "name": "Morpheus Hotel",
+            "url": "https://www.archdaily.com/896433/morpheus-hotel-zaha-hadid-architects",
+            "type": "Architecture",
+            "description": ""
+        },
+        {
+            "id": "super tall",
+            "name": "super tall",
+            "type": "Flairs",
+            "description": ""
+        },
+        {
+            "id": "Umeda Sky Building",
+            "name": "Umeda Sky Building",
+            "type": "Architecture",
+            "description": ""
+        },
+        {
+            "id": "Bendigo Hospital",
+            "name": "Bendigo Hospital",
+            "url": "https://www.archdaily.com/938939/bendigo-hospital-silver-thomas-hanley-plus-bates-smart",
+            "type": "Architecture",
+            "description": ""
+        },
+        {
+            "id": "Australia",
+            "name": "Australia",
+            "type": "Locations",
+            "description": ""
+        },
+        {
+            "id": "Silver Thomas Hanley + Bates Smart",
+            "name": "Silver Thomas Hanley + Bates Smart",
+            "type": "Companies/Individuals",
+            "description": ""
+        }
+    ],
+    "links": [
+        {
+            "source": "super tall",
+            "target": "Umeda Sky Building",
+            "group": "___is the flair of___"
+        },
+        {
+            "source": "super tall",
+            "target": "Morpheus Hotel",
+            "group": "___is the flair of___"
+        },
+        {
+            "source": "Zaha Hadid",
+            "target": "Morpheus Hotel",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "David Mignot",
+            "target": "City Pattern",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "digital art",
+            "target": "City Pattern",
+            "group": "___is the flair of___"
+        },
+        {
+            "source": "David Mignot",
+            "target": "Natural artifact",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "digital art",
+            "target": "Natural artifact",
+            "group": "___is the flair of___"
+        }
+    ]
+}

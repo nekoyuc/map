@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST</title>
+    <script src="d3.v7.min.js"></script>
+    <script type="module">
+        // Load data using FileAttachment
+        const response = await fetch("ProjectLibrary_data.json");
+        const data = await response.json();
+
+        const svg = d3.create("svg")
+            .attr("viewBox", [0, 0, 1600, 1000]);
+
+        var old_links = [{
+                "source": "大坂",
+                "target": "Umeda Sky Building",
+                "group": "___is the location of___"
+            },
+            {
+                "source": "super tall",
+                "target": "Umeda Sky Building",
+                "group": "___is the flair of___"
+            },
+            {
+                "source": "David Mignot",
+                "target": "City Pattern",
+                "group": "___is the author of___"
+            },
+            {
+                "source": "David Mignot",
+                "target": "Natural artifact",
+                "group": "___is the author of___"
+            },
+            {
+                "source": "digital art",
+                "target": "City Pattern",
+                "group": "___is the flair of___"
+            }
+        ];
+
+        let linkGraph = svg.append("g")
+            .selectAll("line")
+            .data(old_links)
+            .join("line");
+
+        // Replace old data with new data
+        linkGraph = linkGraph.data(data.links).join("line");
+        linkGraph.enter().append("line");
+        linkGraph.exit().remove();
+
+        console.log("linkGraph is " + linkGraph.data());
+    </script>
+</head>
+
+</html>
