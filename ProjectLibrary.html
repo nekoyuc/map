@@ -60,6 +60,7 @@
         // Set toggles
         let lastClickedButtonIcon = null;
         let descripToggle = false;
+        let mouseClickingCord = [];
 
         // Load data using FileAttachment
         const response = await fetch("ProjectLibrary_data.json");
@@ -96,13 +97,31 @@
 
             svg.on("click", () => {
                 descripToggle = !descripToggle;
+                // Function to get the mouse coordinates
+                mouseClickingCord = getMouseCoordinates(event);
+                console.log("Mouse coordinates:", mouseClickingCord);
+                console.log(mouseClickingCord.x, mouseClickingCord.y);
             });
+
+            function getMouseCoordinates(event) {
+                const mouseX = event.pageX;
+                const mouseY = event.pageY;
+                //console.log("Mouse coordinates:", mouseX, mouseY);
+                return { x: mouseX, y: mouseY };
+
+            }
 
             // Call the zoom function on the SVG
             svg.call(zoom);
         }
 
-        const simulation = d3.forceSimulation(data.nodes)
+        function getMouseCoordinates(event) {
+            const mouseX = event.pageX;
+            const mouseY = event.pageY;
+            return { x: mouseX, y: mouseY };
+        }
+
+        let simulation = d3.forceSimulation(data.nodes)
             .force("link", d3.forceLink(data.links).id(d => d.id).distance(100).strength(0.5))
             .force("charge", d3.forceManyBody().strength(-100))
             .force("x", d3.forceX())
@@ -229,13 +248,19 @@
         // Function to handle zoom event
         function zoomed(event) {
             const { transform } = event;
-            const mouseX = event.sourceEvent.offsetX - chartWidth / 2;
-            const mouseY = event.sourceEvent.offsetY - chartHeight / 2;
+            mouseClickingCord = getMouseCoordinates(event);
+            console.log(mouseClickingCord)
+            const mouseX = event.sourceEvent.clientX - chartWidth / 2;
+            const mouseY = event.sourceEvent.clientY - chartHeight / 2;
+            //const mouseX = event.sourceEvent.offsetX - chartWidth / 2;
+            //const mouseY = event.sourceEvent.offsetY - chartHeight / 2;
+            console.log("mouseX, mouseY " + mouseX, mouseY)
+            console.log("event.sourceEvent.offsetX, event.sourceEvent.offsetY " + event.sourceEvent.offsetX, event.sourceEvent.offsetY)
             const scale = transform.k;
             const translateX = -mouseX * (scale - 1);
             const translateY = -mouseY * (scale - 1);
+            //svg.attr("transform", `scale(${scale})`);
             svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
-            //svg.attr("transform", `scale(${transform.k})`);
             nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
         }
 

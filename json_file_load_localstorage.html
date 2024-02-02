@@ -18,11 +18,11 @@
         async function loadAndStoreJSON() {
             try {
                 // Fetch the JSON file (replace 'your_file.json' with the actual file path)
-                const response = await fetch('test_data.json');
+                const response = await fetch('ProjectLibrary_data.json');
                 const data = await response.json();
 
                 // Store the parsed JSON data in local storage
-                localStorage.setItem('test_data', JSON.stringify(data));
+                localStorage.setItem('localData', JSON.stringify(data));
 
                 console.log('JSON data has been loaded and stored in local storage:', data);
             } catch (error) {

@@ -1,10 +1,9 @@
 /*
 
-
 Functions for the controller
 
-
 */
+
 
 const zoom = d3.zoom()
     .on("zoom", zoomed);
@@ -16,14 +15,65 @@ function zoomed(event) {
 function createLinkGraph() {
     let linkGraph = svg.append("g")
         .selectAll("line")
-        .join("line");
+        .join("line")
     return linkGraph;
 }
 
-function createNodeGraph() {
-    let nodeGraph = svg.append("g")
-        .selectAll("circle")
-    return nodeGraph;
+function fillByType(d) {
+    if (d.type === "Locations") {
+        return locationsColor;
+    } else if (d.type === "Architecture") {
+        return architectureColor;
+    } else if (d.type === "Flairs") {
+        return flairsColor;
+    } else if (d.type === "Companies/Individuals") {
+        return companiesIndividualsColor;
+    } else if (d.type === "Visuals") {
+        return visualsColor;
+    } else if (d.type === "Audio") {
+        return audioColor;
+    } else {
+        return otherColor;
+    }
+}
+
+function strokeByGroup(d) {
+    if (d.group === "___is the author of___") {
+        return authorLinkColor;
+    } else if (d.group === "___is the location of___") {
+        return locationLinkColor;
+    } else if (d.group === "___is the flair of___") {
+        return flairLinkColor;
+    } else {
+        return otherLinkColor;
+    }
+}
+
+function radiusByType(d) {
+    if (d.type === "Flairs") {
+        return flairNodeSize;
+    } else if (d.type === "Architecture" || d.type === 'Visuals' || d.type === 'Audio') {
+        return projectNodeSize;
+    } else {
+        return topicNodeSize;
+    }
+}
+
+function updateLinkGraph() {
+    linkGraph = linkGraph.data(data.links).join("line");
+    linkGraph.enter().append("line").exit().remove();
+    linkGraph.attr("stroke-width", linkNormalWidth)
+        .attr("stroke-opacity", linkNormalOpacity)
+        .style("stroke", "#000");
+}
+
+function updateNodeGraph() {
+    nodeGraph = nodeGraph.data(data.nodes).join("circle");
+    nodeGraph.enter().append("circle").exit().remove();
+    nodeGraph.attr("stroke", "#fff")
+        .attr("stroke-width", 0.6)
+        .attr("r", 5)
+        .attr("fill", "#000");
 }
 
 function updateDescripWindow() {
