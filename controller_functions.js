@@ -67,6 +67,20 @@ function updateLinkGraph() {
         .style("stroke", "#000");
 }
 
+function updateNodeLabels(nodes) {
+    nodeLabels = nodeLabels.data(nodes)
+        .join("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "-0.35em")
+        //.attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
+        .attr("font-size", 20)
+        .attr("font-family", "Futura Bk BT")
+        .attr("font-weight", "bold")
+        .attr("label-id", d => d.id)
+        .text(d => d.name)
+        //.style("display", "none")
+}
+
 function updateNodeGraph() {
     nodeGraph = nodeGraph.data(data.nodes).join("circle");
     nodeGraph.enter().append("circle").exit().remove();

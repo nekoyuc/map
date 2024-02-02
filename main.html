@@ -17,31 +17,10 @@
 
         // Create the initial graph
         updateLinkGraph()
-        //linkGraph.attr("stroke-width", linkNormalWidth)
-            //.attr("stroke-opacity", linkNormalOpacity)
-            //.style("stroke", "#000")
-            //.style("stroke", d => d.group === "___is the author of___" ? authorLinkColor : (d.group === "___is the location of___" ? locationLinkColor : (d.group === "___is the flair of___" ? flairLinkColor : otherLinkColor)))
-            
-        //.style("stroke", d => { strokeByGroup(d) })
 
         updateNodeGraph()
-        //nodeGraph.attr("stroke", "#fff")
-            //.attr("stroke-width", 0.6)
-            //.attr("r", 5)
-            //.attr("fill", "#000");
-        //.attr("fill", d => { fillByType(d) })
-        //.attr("r", d => { radiusByType(d) })
 
-        nodeLabels.data(data.nodes)
-        nodeLabels = nodeLabels.data(data.nodes).join("text");
-        nodeLabels.enter().append("text").exit().remove().text(d => d.name);
-                //.attr("dy", "-0.35em")
-                //.attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
-                //.attr("font-family", "Futura Bk BT") // Set the font family to "helvetica
-                //.attr("font-weight", "bold") // Set the text to bold
-                //.attr("label-id", d => d.id) // Add the attribute "id" with the value of the node's id
-                //.text(d => d.name)
-                //.style("display", "none")
+        updateNodeLabels(data.nodes)
 
         const createForceDirectedGraph = (data) => {
             nodeGraph.on("click", "")
@@ -54,9 +33,9 @@
                     .attr("y1", d => d.source.y)
                     .attr("x2", d => d.target.x)
                     .attr("y2", d => d.target.y)
-                //nodeLabels
-                //    .attr("x", d => d.x)
-                //    .attr("y", d => d.y)
+                nodeLabels
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
             });
 
             // Append the SVG to the body
@@ -114,7 +93,7 @@
             //const nodeGraph = svg.append('g')
             //    .data(data.nodes)
             //const nodeLabels = svg.append('g')
-                .data(data.nodes)
+            //    .data(data.nodes)
             
             //const zoom = d3.zoom()
             //    .on("zoom", zoomed)
