@@ -13,7 +13,7 @@ let nextId = 0;
 
 // Set the description window dimensions and offsets
 const descripWidth = 800;
-const descripHeight = 700;
+const descripHeight = 1000;
 const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
@@ -49,14 +49,19 @@ const linkDisconnectedOpacity = 0.1;
 const linkConnectedOpacity = 0.7;
 const linkConnectedWidth = 3;
 
+// Set node label display extent
+const nodeLabelDisplayExtent = 1.8;
 
+// Set toggles
+let descripToggle = false;
+let lastClickedButton = null;
 
 // SVG container, including svg, rect, nodeGraph, linkGraph
 const svg = d3.create("svg")
     .attr("width", chartWidth)
     .attr("height", chartHeight)
     .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
-    .attr("style", "max-width: 100%; height: auto; position: absolute; left: 60;")
+    .attr("style", "max-width: 100%; height: auto; position: absolute; top: 40; left: 60;")
 
 svg.append("rect")
     .attr("x", -chartWidth / 2)
@@ -70,10 +75,6 @@ svg.append("rect")
 let linkGraph = svg.append("g")
     .selectAll("line")
     .data([{}])
-    .join("line")
-    .attr("stroke-width", linkNormalWidth)
-    .attr("stroke-opacity", linkNormalOpacity)
-    .style("stroke", "#000");
 //.style("stroke", d => { strokeByGroup(d) })
 
 let nodeGraph = svg.append("g")
@@ -88,12 +89,10 @@ let nodeGraph = svg.append("g")
 //.attr("r", d => { radiusByType(d) })
 
 let nodeLabels = svg.append("g")
-.selectAll("text")
+    .selectAll("text")
 
 const descripWindow = d3.select("body")
     .append("div")
-    .attr("id", null)
-    .attr("name", null)
     .attr("window-id", null)
     .attr("window-name", null)
     .attr("window-url", null)
@@ -110,23 +109,58 @@ const descripWindow = d3.select("body")
     .style("border-radius", "5px")
     .style("background-color", "#fff")
     .style("z-index", "100")
-    .attr("data-source", null);   // "new", "preview" or "edit"
 
 const descripContent = descripWindow.append("div")
+    .style("padding", "10px")
+    .style("word-wrap", "break-word")
+    .style("max-width", "100%") // Set the maximum width to 100%
+    .style("z-index", "100");
 
 const editButton = descripWindow.append("button")
+    .text("Edit")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        saveButton.style("display", "inline-block")
+        backButton.style("display", "inline-block")
+        updateWindowDisplay("edit");
+    });
 
 const deleteButton = descripWindow.append("button")
+    .text("Delete")
+    .style("display", "inline-block")
+    .style("margin-left", "10px");
 
 const saveButton = descripWindow.append("button")
+    .text("Save")
+    .style("display", "none")
+    .style("margin-left", "30px")
+    .on("click", () => {
+        const targetNode = data.nodes.find(node => node.id === descripWindow.attr('window-id'));
+        if (targetNode) {
+            updateNodeData(targetNode);
+        updateLinkData(targetNode);
+        updateLinkGraph(data.links);
+        updateNodeGraph(data.nodes);
+        updateSimulation(data.nodes, data.links);
+        updateWindowAttr(targetNode);
+        updateWindowDisplay("edit");
+    }
+});
 
 const backButton = descripWindow.append("button")
+    .text("Back")
+    .style("display", "none")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        updateWindowDisplay("preview");
+        saveButton.style("display", "none")
+        backButton.style("display", "none")
+    });
 
 // Flair button container, including flair buttons, clear button, and create button
 const flairButtonsContainer = d3.select("body")
-    .append("block", "svg")
     .insert("block", "svg")
-    .attr("class", "buttons-container")
     .style("position", "absolute")
     .style("pointer-events", "none")
     .style("top", "0")
@@ -135,12 +169,24 @@ const flairButtonsContainer = d3.select("body")
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
 
-const flairButtons = flairButtonsContainer.selectAll("button")
+let flairButtons = flairButtonsContainer.selectAll("button")
 
 const clearButton = flairButtonsContainer.append("button")
-    .text("Clear")
-    .style("pointer-event", "auto");
+    .text("Clear Filter")
+    .style("position", "absolute")
+    .style("top", "5px")
+    .style("right", "100px")
+    .style("pointer-events", "auto")
+    .on("click", () => {
+        nodeGraph.attr("opacity", nodeNormalOpacity)
+        linkGraph.attr("stroke-width", linkNormalWidth)
+        linkGraph.attr("stroke-opacity", linkNormalOpacity)
+        lastClickedButton = null;
+    });
 
 const createButton = flairButtonsContainer.append("button")
-    .text("Create")
+    .text("Create New Node")
+    .style("position", "absolute")
+    .style("top", "5px")
+    .style("right", "200px")
     .style("pointer-events", "auto");

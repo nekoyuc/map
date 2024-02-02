@@ -58,7 +58,7 @@
         const nodeLabelDisplayExtent = 1.8;
 
         // Set toggles
-        let lastClickedButtonIcon = null;
+        let lastClickedButton = null;
         let descripToggle = false;
         let mouseClickingCord = [];
 
@@ -170,11 +170,11 @@
         let linkGraph = createLinkGraph(data.links);
         function createLinkGraph(links) {
             let linkGraph = svg.append("g")
-                .attr("stroke-width", linkNormalWidth)
-                .attr("stroke-opacity", linkNormalOpacity)
                 .selectAll("line")
                 .data(links)
                 .join("line")
+                .attr("stroke-width", linkNormalWidth)
+                .attr("stroke-opacity", linkNormalOpacity)
                 .attr("stroke", d => {
                     if (d.group === "___is the author of___") {
                         return authorLinkColor;
@@ -193,11 +193,11 @@
         let nodeGraph = createNodeGraph(data.nodes);
         function createNodeGraph(nodes) {
             let nodeGraph = svg.append("g")
-                .attr("stroke", "#fff")
-                .attr("stroke-width", 0.6)
                 .selectAll("circle")
                 .data(nodes)
                 .join("circle")
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 0.6)
                 .attr("fill", d => {
                     if (d.type === "Locations") {
                         return locationsColor;
@@ -468,8 +468,8 @@
             linkGraph.attr("stroke-width", linkNormalWidth);
 
             // If the button is clicked again, clear the filter
-            if (d3.select(this).attr("flair") === lastClickedButtonIcon) {
-                lastClickedButtonIcon = null;
+            if (d3.select(this).attr("flair") === lastClickedButton) {
+                lastClickedButton = null;
             } else {
                 const selectedNode = nodeGraph.filter(nodeData => nodeData.name === d3.select(this).attr("flair"));
 
@@ -487,7 +487,7 @@
                 disconnectedNodes.attr("opacity", nodeDisconnectedOpacity);
 
                 // Update the last clicked button icon
-                lastClickedButtonIcon = d3.select(this).attr("flair");
+                lastClickedButton = d3.select(this).attr("flair");
             }
         }
 
@@ -503,7 +503,7 @@
                 nodeGraph.attr("opacity", 1)
                 linkGraph.attr("stroke-width", 2)
                 linkGraph.attr("stroke-opacity", 0.4)
-                lastClickedButtonIcon = null
+                lastClickedButton = null
             });
 
         // Function to handle mouseover event
@@ -532,7 +532,7 @@
             descripWindow.attr("window-location", locationNodes.map(locationNode => locationNode.name).join(", "));
             descripWindow.attr("window-flair", flairNodes.map(flairNode => flairNode.name).join(", "));
 
-            simulation.stop(); // Pause the simulation
+            //simulation.stop(); // Pause the simulation
 
             // Display the description window
             if (d.type !== "Flairs") {

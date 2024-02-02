@@ -5,12 +5,6 @@ Functions for the controller
 */
 
 
-const zoom = d3.zoom()
-    .on("zoom", zoomed);
-
-function zoomed(event) {
-
-}
 
 function createLinkGraph() {
     let linkGraph = svg.append("g")
@@ -59,12 +53,79 @@ function radiusByType(d) {
     }
 }
 
-function updateLinkGraph() {
-    linkGraph = linkGraph.data(data.links).join("line");
-    linkGraph.enter().append("line").exit().remove();
+function updateNodeData(node) {
+    node.name = document.getElementById("name-input").value;
+    node.type = document.getElementById("type-input").value;
+    node.description = document.getElementById("description-input").value;
+    node.url = document.getElementById("url-input").value;
+}
+
+function updateLinkData(node) {
+    const newAuthorNames = document.getElementById("authors-input").value.split(", ");
+    const newLocationNames = document.getElementById("locations-input").value.split(", ");
+    const newFlairNames = document.getElementById("flairs-input").value.split(", ");
+    data.links = data.links.filter(link => !(link.target.id === node.id));
+    newAuthorNames.forEach(authorName => {
+        const newAuthorNode = data.nodes.find(node => node.name === authorName.trim());
+        if (newAuthorNode) {
+            data.links.push({
+                "source": newAuthorNode,
+                "target": node,
+                "group": "___is the author of___"
+            });
+        }
+    });
+}
+
+function updateLinkGraph(links) {
+    linkGraph = linkGraph.data(links).join("line");
+    linkGraph.enter().append("line").exit().remove()
     linkGraph.attr("stroke-width", linkNormalWidth)
         .attr("stroke-opacity", linkNormalOpacity)
-        .style("stroke", "#000");
+        .attr("stroke", d => {
+            if (d.group === "___is the author of___") {
+                return authorLinkColor;
+            } else if (d.group === "___is the location of___") {
+                return locationLinkColor;
+            } else if (d.group === "___is the flair of___") {
+                return flairLinkColor;
+            } else {
+                return otherLinkColor;
+            }
+        })
+}
+
+function updateNodeGraph(nodes) {
+    nodeGraph = nodeGraph.data(nodes).join("circle");
+    nodeGraph.enter().append("circle").exit().remove();
+    nodeGraph.attr("stroke", "#fff")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 0.6)
+        .attr("fill", d => {
+            if (d.type === "Locations") {
+                return locationsColor;
+            } else if (d.type === "Architecture") {
+                return architectureColor
+            } else if (d.type === "Flairs") {
+                return flairsColor;
+            } else if (d.type === "Companies/Individuals") {
+                return companiesIndividualsColor;
+            } else if (d.type === "Visuals") {
+                return visualsColor;
+            } else if (d.type === "Audio") {
+                return audioColor;
+            } else {
+                return otherColor;
+            }
+        }
+        )
+        .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
+        .call(drag(simulation))
+}
+
+function updateSimulation(nodes, links) {
+    simulation = simulation.nodes(nodes)
+                    .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.5));
 }
 
 function updateNodeLabels(nodes) {
@@ -72,30 +133,96 @@ function updateNodeLabels(nodes) {
         .join("text")
         .attr("text-anchor", "middle")
         .attr("dy", "-0.35em")
-        //.attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
-        .attr("font-size", 20)
+        .attr("font-size", d3.scaleLinear().domain([0, 1]).range([2, 4]).clamp(true)(1))
+        //.attr("font-size", 20)
         .attr("font-family", "Futura Bk BT")
         .attr("font-weight", "bold")
         .attr("label-id", d => d.id)
         .text(d => d.name)
-        //.style("display", "none")
+        .style("display", "none")
 }
 
-function updateNodeGraph() {
-    nodeGraph = nodeGraph.data(data.nodes).join("circle");
-    nodeGraph.enter().append("circle").exit().remove();
-    nodeGraph.attr("stroke", "#fff")
-        .attr("stroke-width", 0.6)
-        .attr("r", 5)
-        .attr("fill", "#000");
+function updateFlairButtons(nodes) {
+    flairButtons = flairButtons.data(nodes)
+        .join("button")
+        .text(d => d.name)
+        .attr("flair", d => d.name) // Set the name attribute to the node name
+        .style("pointer-events", "auto")
+        .style("margin-top", "5px")
+        .style("margin-left", "5px") // Move the buttons down by 10px
+        .on("click", flairClick);
 }
 
-function updateDescripWindow() {
-    if (descripWindow.attr("data-source") == "new") {
+function flairClick(d) {
+    nodeGraph.attr("opacity", nodeNormalOpacity);
+    linkGraph.attr("stroke-opacity", linkNormalOpacity);
+    linkGraph.attr("stroke-width", linkNormalWidth);
+
+    // If the button is clicked again, clear the filter
+    if (d3.select(this).attr("flair") === lastClickedButton) {
+        lastClickedButton = null;
+    } else {
+        const connectingLinks = linkGraph.filter(linkData => linkData.source.name === d3.select(this).attr("flair") || linkData.target.name === d3.select(this).attr("flair"));
+        connectingLinks.attr("stroke-opacity", linkConnectedOpacity);
+        connectingLinks.attr("stroke-width", linkConnectedWidth);
+
+        const disconnectedLinks = linkGraph.filter(linkData => linkData.source.name !== d3.select(this).attr("flair") && linkData.target.name !== d3.select(this).attr("flair"));
+        disconnectedLinks.attr("stroke-opacity", linkDisconnectedOpacity);
+
+        const disconnectedNodes = nodeGraph.filter(nodeData => {
+            const connectedNodes = connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]);
+            return !connectedNodes.some(connectedNode => connectedNode.name === nodeData.name);
+        });
+        disconnectedNodes.attr("opacity", nodeDisconnectedOpacity);
+
+        // Update the last clicked button icon
+        lastClickedButton = d3.select(this).attr("flair");
+    }
+}
+
+const zoom = d3.zoom()
+    .on("zoom", zoomed);
+
+function zoomed(event) {
+    const { transform } = event;
+    const mouseX = event.sourceEvent.clientX - chartWidth / 2;
+    const mouseY = event.sourceEvent.clientY - chartHeight / 2;
+    const scale = transform.k;
+    const translateX = -mouseX * (scale - 1);
+    const translateY = -mouseY * (scale - 1);
+    //svg.attr("transform", `scale(${scale})`);
+    svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
+    nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
+}
+
+function updateWindowAttr(d) {
+    descripWindow.attr("window-id", d.id);
+    descripWindow.attr("window-name", d.name);
+    descripWindow.attr("window-url", d.url);
+    descripWindow.attr("window-type", d.type);
+    descripWindow.attr("window-description", d.description);
+
+    const connectingLinks = linkGraph.filter(linkData => linkData.source.id === d.id || linkData.target.id === d.id);
+    const connectedNodes = [...new Set(connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]))];
+
+    const authorNodes = connectedNodes.filter(nodeData => nodeData.type === "Companies/Individuals");
+    const locationNodes = connectedNodes.filter(nodeData => nodeData.type === "Locations");
+    const flairNodes = connectedNodes.filter(nodeData => nodeData.type === "Flairs");
+
+    descripWindow.attr("window-author", authorNodes.map(nodeData => nodeData.name).join(", "));
+    descripWindow.attr("window-location", locationNodes.map(nodeData => nodeData.name).join(", "));
+    descripWindow.attr("window-flair", flairNodes.map(nodeData => nodeData.name).join(", "));
+}
+
+function updateWindowDisplay(goal = "preview") {
+    //    if (descripWindow.attr("data-source") == "new") {
+    if (goal == "new") {
         displayWindowNew();
-    } else if (descripWindow.attr("data-source") == "preview") {
+    } else if (goal == "preview") {
+        //    } else if (descripWindow.attr("data-source") == "preview") {
         displayWindowPreview();
-    } else if (descripWindow.attr("data-source") == "edit") {
+    } else if (goal == "edit") {
+        //    } else if (descripWindow.attr("data-source") == "edit") {
         displayWindowEdit();
     }
 }
@@ -149,14 +276,31 @@ function displayWindowEdit() {
     return descripContent.html(descripContentHtml);
 }
 
-function flairClick(d) {
 
+
+function handleMouseOver(event, d) {
+    descripToggle = false;
+    updateWindowAttr(d);
+    d3.select(this)
+        .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? hoveredProjectNodeSize : hoveredTopicNodeSize))
+        .attr("fill", "#808080");
+
+    if (d.type !== "Flairs") {
+        updateWindowDisplay("preview")
+        descripWindow.style("display", "block")
+            .style("left", `${event.clientX + 10}px`)
+            .style("top", `${event.clientY + 10}px`);
+    };
 }
 
-function HandleMouseOver(event, d) {
-    descripWindow.attr("data-source", "preview");
-}
+function handleMouseOut(event, d) {
+    d3.select(this)
+        .attr("r", d => d.type === "Flairs" ? flairNodeSize : d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize)
+        .attr("fill", d => d.type === "Locations" ? locationsColor : d.type === "Architecture" ? architectureColor : d.type === "Flairs" ? flairsColor : d.type === "Companies/Individuals" ? companiesIndividualsColor : d.type === "Visuals" ? visualsColor : d.type === "Audio" ? audioColor : otherColor);
 
-function HandleMouseOut(event, d) {
+    simulation.restart(); // Resume the simulation
 
+    if (!descripToggle) {
+        descripWindow.style("display", "none");
+    }
 }
