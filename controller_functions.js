@@ -65,6 +65,7 @@ function updateLinkData(node) {
     const newLocationNames = document.getElementById("locations-input").value.split(", ");
     const newFlairNames = document.getElementById("flairs-input").value.split(", ");
     data.links = data.links.filter(link => !(link.target.id === node.id));
+
     newAuthorNames.forEach(authorName => {
         const newAuthorNode = data.nodes.find(node => node.name === authorName.trim());
         if (newAuthorNode) {
@@ -72,60 +73,81 @@ function updateLinkData(node) {
                 "source": newAuthorNode,
                 "target": node,
                 "group": "___is the author of___"
-            });
+            })
         }
     });
-}
+
+    newLocationNames.forEach(locationName => {
+        const newLocationNode = data.nodes.find(node => node.name === locationName.trim());
+        if (newLocationNode) {
+            data.links.push({
+                "source": newLocationNode,
+                "target": node,
+                "group": "___is the location of___"
+            })
+        }
+    });
+
+    newFlairNames.forEach(flairName => {
+        const newFlairNode = data.nodes.find(node => node.name === flairName.trim());
+        if (newFlairNode) {
+            data.links.push({
+                "source": newFlairNode,
+                "target": node,
+                "group": "___is the flair of___"
+            });
+        }
+    })
+};
 
 function updateLinkGraph(links) {
     linkGraph = linkGraph.data(links).join("line");
     linkGraph.enter().append("line").exit().remove()
-    linkGraph.attr("stroke-width", linkNormalWidth)
-        .attr("stroke-opacity", linkNormalOpacity)
-        .attr("stroke", d => {
-            if (d.group === "___is the author of___") {
-                return authorLinkColor;
-            } else if (d.group === "___is the location of___") {
-                return locationLinkColor;
-            } else if (d.group === "___is the flair of___") {
-                return flairLinkColor;
-            } else {
-                return otherLinkColor;
-            }
-        })
+    //linkGraph.attr("stroke-width", linkNormalWidth)
+    //.attr("stroke-opacity", linkNormalOpacity)
+    linkGraph.attr("stroke", d => {
+        if (d.group === "___is the author of___") {
+            return authorLinkColor;
+        } else if (d.group === "___is the location of___") {
+            return locationLinkColor;
+        } else if (d.group === "___is the flair of___") {
+            return flairLinkColor;
+        } else {
+            return otherLinkColor;
+        }
+    })
 }
 
 function updateNodeGraph(nodes) {
     nodeGraph = nodeGraph.data(nodes).join("circle");
     nodeGraph.enter().append("circle").exit().remove();
-    nodeGraph.attr("stroke", "#fff")
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 0.6)
-        .attr("fill", d => {
-            if (d.type === "Locations") {
-                return locationsColor;
-            } else if (d.type === "Architecture") {
-                return architectureColor
-            } else if (d.type === "Flairs") {
-                return flairsColor;
-            } else if (d.type === "Companies/Individuals") {
-                return companiesIndividualsColor;
-            } else if (d.type === "Visuals") {
-                return visualsColor;
-            } else if (d.type === "Audio") {
-                return audioColor;
-            } else {
-                return otherColor;
-            }
+    //nodeGraph.attr("stroke", "#fff")
+    //    .attr("stroke-width", 0.6)
+    nodeGraph.attr("fill", d => {
+        if (d.type === "Locations") {
+            return locationsColor;
+        } else if (d.type === "Architecture") {
+            return architectureColor
+        } else if (d.type === "Flairs") {
+            return flairsColor;
+        } else if (d.type === "Companies/Individuals") {
+            return companiesIndividualsColor;
+        } else if (d.type === "Visuals") {
+            return visualsColor;
+        } else if (d.type === "Audio") {
+            return audioColor;
+        } else {
+            return otherColor;
         }
-        )
+    }
+    )
         .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
         .call(drag(simulation))
 }
 
 function updateSimulation(nodes, links) {
     simulation = simulation.nodes(nodes)
-                    .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.5));
+        .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.5));
 }
 
 function updateNodeLabels(nodes) {

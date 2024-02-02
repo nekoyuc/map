@@ -73,11 +73,15 @@ svg.append("rect")
     .attr("fill", "none");
 
 let linkGraph = svg.append("g")
+    .attr("stroke-width", linkNormalWidth)
+    .attr("stroke-opacity", linkNormalOpacity)
     .selectAll("line")
     .data([{}])
 //.style("stroke", d => { strokeByGroup(d) })
 
 let nodeGraph = svg.append("g")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 0.6)
     .selectAll("circle")
     .data([{}])
     .join("circle")
@@ -139,14 +143,15 @@ const saveButton = descripWindow.append("button")
         const targetNode = data.nodes.find(node => node.id === descripWindow.attr('window-id'));
         if (targetNode) {
             updateNodeData(targetNode);
-        updateLinkData(targetNode);
-        updateLinkGraph(data.links);
-        updateNodeGraph(data.nodes);
-        updateSimulation(data.nodes, data.links);
-        updateWindowAttr(targetNode);
-        updateWindowDisplay("edit");
-    }
-});
+            updateLinkData(targetNode);
+            updateLinkGraph(data.links);
+            updateNodeGraph(data.nodes);
+            updateSimulation(data.nodes, data.links);
+            simulation.restart();
+            updateWindowAttr(targetNode);
+            updateWindowDisplay("edit");
+        }
+    });
 
 const backButton = descripWindow.append("button")
     .text("Back")

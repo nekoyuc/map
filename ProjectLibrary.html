@@ -170,11 +170,13 @@
         let linkGraph = createLinkGraph(data.links);
         function createLinkGraph(links) {
             let linkGraph = svg.append("g")
+
+                .attr("stroke-width", linkNormalWidth)
+                .attr("stroke-opacity", linkNormalOpacity)
+
                 .selectAll("line")
                 .data(links)
                 .join("line")
-                .attr("stroke-width", linkNormalWidth)
-                .attr("stroke-opacity", linkNormalOpacity)
                 .attr("stroke", d => {
                     if (d.group === "___is the author of___") {
                         return authorLinkColor;
@@ -185,7 +187,9 @@
                     } else {
                         return otherLinkColor;
                     }
-                })
+                });
+
+
             return linkGraph;
         }
 
@@ -193,11 +197,13 @@
         let nodeGraph = createNodeGraph(data.nodes);
         function createNodeGraph(nodes) {
             let nodeGraph = svg.append("g")
+            // The order here matters
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 0.6)
+
                 .selectAll("circle")
                 .data(nodes)
                 .join("circle")
-                .attr("stroke", "#fff")
-                .attr("stroke-width", 0.6)
                 .attr("fill", d => {
                     if (d.type === "Locations") {
                         return locationsColor;
@@ -217,6 +223,8 @@
                 }
                 )
                 .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
+
+
                 .call(drag(simulation))
             return nodeGraph;
         }
@@ -225,6 +233,7 @@
         let nodeLabels = createNodeLabels(data.nodes);
         function createNodeLabels(nodes) {
             let nodeLabels = svg.append("g")
+            // The order here matters
                 .attr("class", "node-labels")
                 .selectAll("text")
                 .data(nodes)
