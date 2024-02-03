@@ -54,26 +54,52 @@ function radiusByType(d) {
 }
 
 function updateNodeData(node) {
-    node.name = document.getElementById("name-input").value;
-    node.type = document.getElementById("type-input").value;
-    node.description = document.getElementById("description-input").value;
-    node.url = document.getElementById("url-input").value;
+    if (node !== null) {
+        node.name = document.getElementById("name-input").value;
+        node.type = document.getElementById("type-input").value;
+        node.description = document.getElementById("description-input").value;
+        node.url = document.getElementById("url-input").value;
+    }
+    else {
+        data.nodes.push({
+            "id": data.nodes.length,
+            "name": document.getElementById("new-name-input").value,
+            "type": document.getElementById("new-type-input").value,
+            "description": document.getElementById("new-description-input").value,
+            "url": document.getElementById("new-url-input").value
+        });
+    }
 }
 
 function updateLinkData(node) {
-    const newAuthorNames = document.getElementById("authors-input").value.split(", ");
-    const newLocationNames = document.getElementById("locations-input").value.split(", ");
-    const newFlairNames = document.getElementById("flairs-input").value.split(", ");
-    data.links = data.links.filter(link => !(link.target.id === node.id));
+    const newAuthorNames = document.getElementById(node === null ? "new-authors-input" : "authors-input").value.split(", ");
+    const newLocationNames = document.getElementById(node === null ? "new-locations-input" : "locations-input").value.split(", ");
+    const newFlairNames = document.getElementById(node === null ? "new-flairs-input" : "flairs-input").value.split(", ");
+    if (node !== null) { data.links = data.links.filter(link => !(link.target.id === node.id)) };
+    targetNode = node === null ? data.nodes[data.nodes.length - 1] : node;
 
     newAuthorNames.forEach(authorName => {
-        const newAuthorNode = data.nodes.find(node => node.name === authorName.trim());
+        if (authorName.trim() === "") return;
+        const newAuthorNode = data.nodes.find(node => node.name === authorName.trim() && node.type === "Companies/Individuals");
         if (newAuthorNode) {
             data.links.push({
                 "source": newAuthorNode,
-                "target": node,
+                "target": targetNode,
                 "group": "___is the author of___"
-            })
+            });
+        } else if (window.confirm(`The author "${authorName.trim()}" does not exist. Do you want to create a new author?`)) {
+            data.nodes.push({
+                "id": data.nodes.length,
+                "name": authorName.trim(),
+                "type": "Companies/Individuals",
+                "description": "",
+                "url": ""
+            });
+            data.links.push({
+                "source": data.nodes[data.nodes.length - 1],
+                "target": targetNode,
+                "group": "___is the author of___"
+            });
         }
     });
 
@@ -143,6 +169,8 @@ function updateNodeGraph(nodes) {
     )
         .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
         .call(drag(simulation))
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut);
 }
 
 function updateSimulation(nodes, links) {
@@ -161,7 +189,7 @@ function updateNodeLabels(nodes) {
         .attr("font-weight", "bold")
         .attr("label-id", d => d.id)
         .text(d => d.name)
-        //.style("display", "none")
+    //.style("display", "none")
 }
 
 function updateFlairButtons(nodes) {
@@ -234,6 +262,17 @@ function updateWindowAttr(d) {
     descripWindow.attr("window-author", authorNodes.map(nodeData => nodeData.name).join(", "));
     descripWindow.attr("window-location", locationNodes.map(nodeData => nodeData.name).join(", "));
     descripWindow.attr("window-flair", flairNodes.map(nodeData => nodeData.name).join(", "));
+}
+
+function clearWindowAttr() {
+    descripWindow.attr("window-id", null);
+    descripWindow.attr("window-name", null);
+    descripWindow.attr("window-url", null);
+    descripWindow.attr("window-type", null);
+    descripWindow.attr("window-description", null);
+    descripWindow.attr("window-author", null);
+    descripWindow.attr("window-location", null);
+    descripWindow.attr("window-flair", null);
 }
 
 function updateWindowDisplay(goal = "preview") {

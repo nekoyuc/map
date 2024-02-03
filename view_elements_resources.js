@@ -95,6 +95,55 @@ let nodeGraph = svg.append("g")
 let nodeLabels = svg.append("g")
     .selectAll("text")
 
+const addNodeWindow = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("display", "none")
+    .style("width", "800px")
+    .style("height", "800px")
+    .style("border", "1px solid #000")
+    .style("border-radius", "5px")
+    .style("background-color", "#fff")
+    .style("z-index", "100")
+    .style("top", "50%")
+    .style("left", "50%")
+    .style("transform", "translate(-50%, -50%)")
+    .style("background-color", "#fff")
+    .style("z-index", "200");
+
+const addNodeContent = addNodeWindow.append("div")
+    .style("padding", "10px")
+    .style("word-wrap", "break-word")
+    .style("max-width", "100%") // Set the maximum width to 100%
+    .style("z-index", "200")
+    .style("overflow", "auto");
+
+let addNodeContentHtml = `
+    <br><br><strong>New name:</strong> <input type="text" id="new-name-input" value="${""}">
+    <br><strong>New type:</strong> <input type="text" id="new-type-input" value="${""}">
+    <br><strong>New description:</strong> <input type="text" id="new-description-input" value="${""}">
+    <br><strong>New URL:</strong> <input type="text" id="new-url-input" value="${""}">
+
+    <br><br><strong>New author:</strong> <input type="text" id="new-authors-input" value="${""}">
+    <br><strong>New location:</strong> <input type="text" id="new-locations-input" value="${""}">
+    <br><strong>New flairs:</strong> (separate flairs with ",") <input type="text" id="new-flairs-input" value="${""}">
+    `;
+
+const addNodeButton = addNodeWindow.append("button")
+    .text("Add Node")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        updateNodeData(null);
+        updateLinkData(null);
+        updateLinkGraph(data.links);
+        updateNodeGraph(data.nodes);
+        updateNodeLabels(data.nodes);
+        updateSimulation(data.nodes, data.links);
+        simulation.restart();
+        addNodeWindow.style("display", "none");
+    });
+
 const descripWindow = d3.select("body")
     .append("div")
     .attr("window-id", null)
@@ -158,8 +207,8 @@ const saveButton = descripWindow.append("button")
     .on("click", () => {
         const targetNode = data.nodes.find(node => node.id === descripWindow.attr('window-id'));
         if (targetNode) {
-            updateNodeData(targetNode);
             updateLinkData(targetNode);
+            updateNodeData(targetNode);
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);
@@ -211,4 +260,9 @@ const createButton = flairButtonsContainer.append("button")
     .style("position", "absolute")
     .style("top", "5px")
     .style("right", "200px")
-    .style("pointer-events", "auto");
+    .style("pointer-events", "auto")
+    .on("click", () => {
+        addNodeWindow.style("display", "block");
+        addNodeContent.html(addNodeContentHtml);
+        //descripContent.html(descripContentHtml);
+    });
