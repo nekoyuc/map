@@ -161,7 +161,7 @@ function updateNodeLabels(nodes) {
         .attr("font-weight", "bold")
         .attr("label-id", d => d.id)
         .text(d => d.name)
-        .style("display", "none")
+        //.style("display", "none")
 }
 
 function updateFlairButtons(nodes) {

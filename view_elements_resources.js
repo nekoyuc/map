@@ -133,7 +133,23 @@ const editButton = descripWindow.append("button")
 const deleteButton = descripWindow.append("button")
     .text("Delete")
     .style("display", "inline-block")
-    .style("margin-left", "10px");
+    .style("margin-left", "10px")
+    .on("click", () => {
+        if (window.confirm("Are you sure you want to delete the node?")) {
+            const targetNode = data.nodes.find(node => node.id === descripWindow.attr('window-id'));
+            if (targetNode) {
+                const targetNodeId = targetNode.id;
+                data.links = data.links.filter(link => link.source.id !== targetNodeId && link.target.id !== targetNodeId);
+                data.nodes = data.nodes.filter(node => node.id !== targetNodeId);
+                updateLinkGraph(data.links);
+                updateNodeGraph(data.nodes);
+                updateNodeLabels(data.nodes);
+                updateSimulation(data.nodes, data.links);
+                simulation.restart();
+                descripWindow.style("display", "none");
+            }
+        }
+    })
 
 const saveButton = descripWindow.append("button")
     .text("Save")
@@ -146,6 +162,7 @@ const saveButton = descripWindow.append("button")
             updateLinkData(targetNode);
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
+            updateNodeLabels(data.nodes);
             updateSimulation(data.nodes, data.links);
             simulation.restart();
             updateWindowAttr(targetNode);

@@ -72,7 +72,8 @@
         // Create the initial graph
         updateLinkGraph(data.links)
         updateNodeGraph(data.nodes)
-        updateNodeLabels(data.nodes)
+        updateNodeLabels(data.nodes)    
+        nodeLabels.style("display", "none")
         updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"))
 
         // Create the graph
