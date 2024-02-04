@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Library Graph</title>
 </head>
 
 <body>
     <script src="d3.v7.min.js"></script>
-    <script src="controller_functions.js"></script>
-    <script src="view_elements_resources.js"></script>
+    <script src="controller_functions.js?v=1"></script>
+    <script src="view_elements_resources.js?v=1"></script>
     <script>
         const data = JSON.parse(localStorage.getItem('localData'));
         console.log("Hello world");
@@ -40,7 +43,7 @@
 
         // Create the force simulation
         var simulation = d3.forceSimulation(data.nodes)
-            .force("link", d3.forceLink(data.links).id(d => d.id).distance(100).strength(0.5))
+            .force("link", d3.forceLink(data.links).id(d => d.name).distance(100).strength(0.5))
             .force("charge", d3.forceManyBody().strength(-100))
             .force("x", d3.forceX())
             .force("y", d3.forceY());

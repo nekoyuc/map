@@ -205,10 +205,11 @@ const saveButton = descripWindow.append("button")
     .style("display", "none")
     .style("margin-left", "30px")
     .on("click", () => {
-        const targetNode = data.nodes.find(node => node.id === descripWindow.attr('window-id'));
+        const targetNode = data.nodes.find(node => node.id == descripWindow.attr('window-id'));
         if (targetNode) {
-            updateLinkData(targetNode);
             updateNodeData(targetNode);
+            updateLinkData(targetNode);
+            
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);

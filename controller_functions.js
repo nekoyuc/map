@@ -175,7 +175,7 @@ function updateNodeGraph(nodes) {
 
 function updateSimulation(nodes, links) {
     simulation = simulation.nodes(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.5));
+        .force("link", d3.forceLink(links).id(d => d.name).distance(100).strength(0.5));
 }
 
 function updateNodeLabels(nodes) {
@@ -351,6 +351,8 @@ function handleMouseOver(event, d) {
         descripWindow.style("display", "block")
             .style("left", `${event.clientX + 10}px`)
             .style("top", `${event.clientY + 10}px`);
+        saveButton.style("display", "none");
+        backButton.style("display", "none");
     };
 }
 
