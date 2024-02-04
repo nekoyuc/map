@@ -62,69 +62,85 @@ function updateNodeData(node) {
     }
     else {
         data.nodes.push({
-            "id": data.nodes.length,
             "name": document.getElementById("new-name-input").value,
             "type": document.getElementById("new-type-input").value,
             "description": document.getElementById("new-description-input").value,
             "url": document.getElementById("new-url-input").value
         });
     }
+
 }
 
 function updateLinkData(node) {
     const newAuthorNames = document.getElementById(node === null ? "new-authors-input" : "authors-input").value.split(", ");
     const newLocationNames = document.getElementById(node === null ? "new-locations-input" : "locations-input").value.split(", ");
     const newFlairNames = document.getElementById(node === null ? "new-flairs-input" : "flairs-input").value.split(", ");
-    if (node !== null) { data.links = data.links.filter(link => !(link.target.id === node.id)) };
-    targetNode = node === null ? data.nodes[data.nodes.length - 1] : node;
 
-    newAuthorNames.forEach(authorName => {
-        if (authorName.trim() === "") return;
-        const newAuthorNode = data.nodes.find(node => node.name === authorName.trim() && node.type === "Companies/Individuals");
-        if (newAuthorNode) {
+    const nodeType = (node === null ? document.getElementById("new-type-input").value : node.type);
+
+    // If this node already exists and is/becomes an author, remove all the links that are from the wrong group
+    if (nodeType === "Companies/Individuals" && node !== null) {
+        data.links = data.links.filter(link => !(link.source.name === node.name && link.group !== "___is the author of"));
+        console.log("goes through C/I")
+    }
+    
+    // If this node already exists and is/becomes a location, remove all the links that are from the wrong group
+    else if (nodeType === "Locations" && node !== null) {
+        data.links = data.links.filter(link => !(link.source.name === node.name && link.group !== "___is the location of"))
+        console.log("goes through Locations")
+    }
+    
+    // If this node is a project
+    else if (nodeType == "Architecture" || nodeType == "Visuals" || nodeType == "Audio") {
+        console.log("goes through project")
+        // Remove all existing links
+        if (node !== null) { data.links = data.links.filter(link => !(link.source.name === node.name || link.target.name === node.name)) };
+        console.log("node name is " + node.name);
+        console.log((node !== null));
+        console.log(data.links)
+        targetNode = (node === null ? data.nodes.find(node => node.name === document.getElementById("new-name-input").value) : node);
+
+        updateProjectLinks(newAuthorNames, "Companies/Individuals", targetNode)
+        updateProjectLinks(newLocationNames, "Locations", targetNode)
+        updateProjectLinks(newFlairNames, "Flairs", targetNode)
+    } else return;
+};
+
+
+function updateProjectLinks(list, type, targetNode) {
+    list.forEach(name => {
+        if (name.trim() === "") return;
+        const newNode = data.nodes.find(node => node.name === name.trim() && node.type === type);
+
+        // If the node already exists, create a new link
+        if (newNode) {
             data.links.push({
-                "source": newAuthorNode,
+                "source": newNode,
                 "target": targetNode,
-                "group": "___is the author of___"
-            });
-        } else if (window.confirm(`The author "${authorName.trim()}" does not exist. Do you want to create a new author?`)) {
+                "group": type === "Companies/Individuals" ? "___is the author of___" : type === "Locations" ? "___is the location of___" : "___is the flair of___"
+            })
+        }
+
+        // If the node does not exist, create a new node and a new link
+        else if (window.confirm(`The ${type === "Companies/Individuals" ? "author" : type === "Locations" ? "location" : "flair"} "${name.trim()}" does not exist. Do you want to create a new ${type === "Companies/Individuals" ? "author" : type === "Locations" ? "location" : "flair"}?`)) {
             data.nodes.push({
-                "id": data.nodes.length,
-                "name": authorName.trim(),
-                "type": "Companies/Individuals",
+                "name": name.trim(),
+                "type": type,
                 "description": "",
                 "url": ""
             });
             data.links.push({
-                "source": data.nodes[data.nodes.length - 1],
+                "source": data.nodes.find(node => node.name === name.trim() && node.type === type),
                 "target": targetNode,
-                "group": "___is the author of___"
-            });
-        }
-    });
-
-    newLocationNames.forEach(locationName => {
-        const newLocationNode = data.nodes.find(node => node.name === locationName.trim());
-        if (newLocationNode) {
-            data.links.push({
-                "source": newLocationNode,
-                "target": node,
-                "group": "___is the location of___"
-            })
-        }
-    });
-
-    newFlairNames.forEach(flairName => {
-        const newFlairNode = data.nodes.find(node => node.name === flairName.trim());
-        if (newFlairNode) {
-            data.links.push({
-                "source": newFlairNode,
-                "target": node,
-                "group": "___is the flair of___"
+                "group": type === "Companies/Individuals" ? "___is the author of___" : type === "Locations" ? "___is the location of___" : "___is the flair of___"
             });
         }
     })
-};
+}
+
+function updateLocalStorage() {
+    localStorage.setItem("localData", JSON.stringify(data));
+}
 
 function updateLinkGraph(links) {
     linkGraph = linkGraph.data(links).join("line");
@@ -187,7 +203,6 @@ function updateNodeLabels(nodes) {
         //.attr("font-size", 20)
         .attr("font-family", "Futura Bk BT")
         .attr("font-weight", "bold")
-        .attr("label-id", d => d.id)
         .text(d => d.name)
     //.style("display", "none")
 }
@@ -246,13 +261,12 @@ function zoomed(event) {
 }
 
 function updateWindowAttr(d) {
-    descripWindow.attr("window-id", d.id);
     descripWindow.attr("window-name", d.name);
     descripWindow.attr("window-url", d.url);
     descripWindow.attr("window-type", d.type);
     descripWindow.attr("window-description", d.description);
 
-    const connectingLinks = linkGraph.filter(linkData => linkData.source.id === d.id || linkData.target.id === d.id);
+    const connectingLinks = linkGraph.filter(linkData => linkData.source.name === d.name || linkData.target.name === d.name);
     const connectedNodes = [...new Set(connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]))];
 
     const authorNodes = connectedNodes.filter(nodeData => nodeData.type === "Companies/Individuals");
@@ -265,7 +279,6 @@ function updateWindowAttr(d) {
 }
 
 function clearWindowAttr() {
-    descripWindow.attr("window-id", null);
     descripWindow.attr("window-name", null);
     descripWindow.attr("window-url", null);
     descripWindow.attr("window-type", null);
@@ -316,7 +329,7 @@ function displayWindowPreview() {
 
 function displayWindowEdit() {
     let descripContentHtml = `
-    <strong>ID:</strong> ${descripWindow.attr("window-id")}
+
     <br><strong>Name:</strong> ${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}
     <br><strong>Type:</strong> ${descripWindow.attr("window-type") ? descripWindow.attr("window-type") : ""}
     <br><strong>Description:</strong> ${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}
