@@ -27,7 +27,7 @@
         },
         {
             "id": "digital art",
-            "name": "digital artsss",
+            "name": "digital art",
             "type": "Flairs",
             "description": ""
         },
@@ -505,12 +505,12 @@
             "group": "___is the author of___"
         },
         {
-            "source": "digital artsss",
+            "source": "digital art",
             "target": "City Pattern",
             "group": "___is the flair of___"
         },
         {
-            "source": "digital artsss",
+            "source": "digital art",
             "target": "Natural artifact",
             "group": "___is the flair of___"
         },

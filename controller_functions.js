@@ -13,46 +13,6 @@ function createLinkGraph() {
     return linkGraph;
 }
 
-function fillByType(d) {
-    if (d.type === "Locations") {
-        return locationsColor;
-    } else if (d.type === "Architecture") {
-        return architectureColor;
-    } else if (d.type === "Flairs") {
-        return flairsColor;
-    } else if (d.type === "Companies/Individuals") {
-        return companiesIndividualsColor;
-    } else if (d.type === "Visuals") {
-        return visualsColor;
-    } else if (d.type === "Audio") {
-        return audioColor;
-    } else {
-        return otherColor;
-    }
-}
-
-function strokeByGroup(d) {
-    if (d.group === "___is the author of___") {
-        return authorLinkColor;
-    } else if (d.group === "___is the location of___") {
-        return locationLinkColor;
-    } else if (d.group === "___is the flair of___") {
-        return flairLinkColor;
-    } else {
-        return otherLinkColor;
-    }
-}
-
-function radiusByType(d) {
-    if (d.type === "Flairs") {
-        return flairNodeSize;
-    } else if (d.type === "Architecture" || d.type === 'Visuals' || d.type === 'Audio') {
-        return projectNodeSize;
-    } else {
-        return topicNodeSize;
-    }
-}
-
 function updateNodeData(node) {
     if (node !== null) {
         node.name = document.getElementById("name-input").value;
@@ -68,7 +28,6 @@ function updateNodeData(node) {
             "url": document.getElementById("new-url-input").value
         });
     }
-
 }
 
 function updateLinkData(node) {
@@ -76,28 +35,22 @@ function updateLinkData(node) {
     const newLocationNames = document.getElementById(node === null ? "new-locations-input" : "locations-input").value.split(", ");
     const newFlairNames = document.getElementById(node === null ? "new-flairs-input" : "flairs-input").value.split(", ");
 
-    const nodeType = (node === null ? document.getElementById("new-type-input").value : node.type);
+    const nodeType = (node === null ? document.getElementById("new-type-input").value : document.getElementById("type-input").value);
 
     // If this node already exists and is/becomes an author, remove all the links that are from the wrong group
     if (nodeType === "Companies/Individuals" && node !== null) {
-        data.links = data.links.filter(link => !(link.source.name === node.name && link.group !== "___is the author of"));
-        console.log("goes through C/I")
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of") || link.target.name === node.name));
     }
     
     // If this node already exists and is/becomes a location, remove all the links that are from the wrong group
     else if (nodeType === "Locations" && node !== null) {
-        data.links = data.links.filter(link => !(link.source.name === node.name && link.group !== "___is the location of"))
-        console.log("goes through Locations")
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of") || link.target.name === node.name));
     }
     
     // If this node is a project
     else if (nodeType == "Architecture" || nodeType == "Visuals" || nodeType == "Audio") {
-        console.log("goes through project")
         // Remove all existing links
         if (node !== null) { data.links = data.links.filter(link => !(link.source.name === node.name || link.target.name === node.name)) };
-        console.log("node name is " + node.name);
-        console.log((node !== null));
-        console.log(data.links)
         targetNode = (node === null ? data.nodes.find(node => node.name === document.getElementById("new-name-input").value) : node);
 
         updateProjectLinks(newAuthorNames, "Companies/Individuals", targetNode)
@@ -105,7 +58,6 @@ function updateLinkData(node) {
         updateProjectLinks(newFlairNames, "Flairs", targetNode)
     } else return;
 };
-
 
 function updateProjectLinks(list, type, targetNode) {
     list.forEach(name => {
@@ -139,7 +91,11 @@ function updateProjectLinks(list, type, targetNode) {
 }
 
 function updateLocalStorage() {
-    localStorage.setItem("localData", JSON.stringify(data));
+    const newData = {
+        nodes: data.nodes.map(({ id, name, type, description, url }) => ({ id, name, type, description, url })),
+        links: data.links.map(({ source, target, group }) => ({ source: source.name, target: target.name, group }))
+    };
+    localStorage.setItem("localData", JSON.stringify(newData));
 }
 
 function updateLinkGraph(links) {
@@ -243,6 +199,13 @@ function flairClick(d) {
         // Update the last clicked button icon
         lastClickedButton = d3.select(this).attr("flair");
     }
+}
+
+function clearFlairFilter() {
+    nodeGraph.attr("opacity", nodeNormalOpacity);
+        linkGraph.attr("stroke-width", linkNormalWidth);
+        linkGraph.attr("stroke-opacity", linkNormalOpacity);
+        lastClickedButton = null;
 }
 
 const zoom = d3.zoom()
@@ -349,8 +312,6 @@ function displayWindowEdit() {
     `;
     return descripContent.html(descripContentHtml);
 }
-
-
 
 function handleMouseOver(event, d) {
     descripToggle = false;

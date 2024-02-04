@@ -77,7 +77,6 @@ let linkGraph = svg.append("g")
     .attr("stroke-opacity", linkNormalOpacity)
     .selectAll("line")
     .data([{}])
-//.style("stroke", d => { strokeByGroup(d) })
 
 let nodeGraph = svg.append("g")
     .attr("stroke", "#fff")
@@ -89,8 +88,6 @@ let nodeGraph = svg.append("g")
     .attr("stroke-width", 0.6)
     .attr("r", 5)
     .attr("fill", "#000");
-//.attr("fill", d => { fillByType(d) })
-//.attr("r", d => { radiusByType(d) })
 
 let nodeLabels = svg.append("g")
     .selectAll("text")
@@ -135,18 +132,20 @@ const deleteButton = descripWindow.append("button")
     .style("margin-left", "10px")
     .on("click", () => {
         if (window.confirm("Are you sure you want to delete the node?")) {
-            const targetNode = data.nodes.find(node => node.name === descripWindow.attr('window-name'));
-            if (targetNode) {
-                const targetNodeName = targetNode.name;
-                data.links = data.links.filter(link => link.source.name !== targetNodeName && link.target.name !== targetNodeName);
-                data.nodes = data.nodes.filter(node => node.name !== targetNodeName);
-                updateLinkGraph(data.links);
-                updateNodeGraph(data.nodes);
-                updateNodeLabels(data.nodes);
-                updateSimulation(data.nodes, data.links);
-                simulation.restart();
-                descripWindow.style("display", "none");
-            }
+            const targetNodeName = descripWindow.attr('window-name');
+            // Delete the node and its links
+            data.links = data.links.filter(link => link.source.name !== targetNodeName && link.target.name !== targetNodeName);
+            data.nodes = data.nodes.filter(node => node.name !== targetNodeName);
+            // Update the graph
+            updateLinkGraph(data.links);
+            updateNodeGraph(data.nodes);
+            updateNodeLabels(data.nodes);
+            updateSimulation(data.nodes, data.links);
+            simulation.restart();
+            descripWindow.style("display", "none");
+            // Update the local storage with updated data
+            updateLocalStorage();
+
         }
     })
 
@@ -156,11 +155,7 @@ const saveButton = descripWindow.append("button")
     .style("margin-left", "30px")
     .on("click", () => {
         const targetNode = data.nodes.find(node => node.name == descripWindow.attr('window-name'));
-        console.log("targetNode: ", targetNode);
-        console.log("random node", data.nodes.find(node => node.name == "Zaha Hadid"));
-        console.log("window-name: ", descripWindow.attr('window-name'));
         if (targetNode) {
-            console.log("if targetnode is true");
             updateNodeData(targetNode);
             updateLinkData(targetNode);
 
@@ -172,7 +167,7 @@ const saveButton = descripWindow.append("button")
             //updateFlairButtons(data.nodes);
             updateWindowAttr(targetNode);
             updateWindowDisplay("edit");
-            //updateLocalStorage();
+            updateLocalStorage();
         }
     });
 
@@ -193,38 +188,30 @@ const flairButtonsContainer = d3.select("body")
     .style("pointer-events", "none")
     .style("top", "0")
     .style("left", "0")
-    .style("width", `${chartWidth}px`)
+    .style("width", `${chartWidth * 0.7}px`) // Set the width to 70% of chartWidth
+    .style("height", `${chartHeight}px`)
+    .style("z-index", "999");
+
+const miscButtonsContainer = d3.select("body")
+    .insert("block", "svg")
+    .style("position", "absolute")
+    .style("pointer-events", "none")
+    .style("top", "0")
+    .style("left", `${chartWidth * 0.7}px`) // Set the left position to the width of the flairButtonsContainer
+    .style("width", `${chartWidth * 0.3}px`) // Set the width to 30% of chartWidth
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
 
 let flairButtons = flairButtonsContainer.selectAll("button")
 
-const downloadButton = flairButtonsContainer.append("button")
+const downloadButton = miscButtonsContainer.append("button")
     .text("Download Data")
-    .style("position", "absolute")
-    .style("top", "5px")
-    .style("right", "100px")
+    .style("display", "inline-block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
     .style("pointer-events", "auto")
     .on("click", () => {
-        const filteredData = {
-            nodes: data.nodes.map(node => {
-                return {
-                    name: node.name,
-                    url: node.url,
-                    type: node.type,
-                    description: node.description
-                };
-            }),
-            links: data.links.map(link => {
-                return {
-                    source: link.source.name,
-                    target: link.target.name,
-                    group: link.group
-                };
-            })
-        };
-
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(filteredData));
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", "ProjectLibrary_data.json"); // Set the filename as "ProjectLibrary_data.json"
@@ -233,29 +220,15 @@ const downloadButton = flairButtonsContainer.append("button")
         downloadAnchorNode.remove();
     });
 
-const clearButton = flairButtonsContainer.append("button")
-    .text("Clear Filter")
-    .style("position", "absolute")
-    .style("top", "5px")
-    .style("right", "220px")
-    .style("pointer-events", "auto")
-    .on("click", () => {
-        nodeGraph.attr("opacity", nodeNormalOpacity)
-        linkGraph.attr("stroke-width", linkNormalWidth)
-        linkGraph.attr("stroke-opacity", linkNormalOpacity)
-        lastClickedButton = null;
-    });
-
-const createButton = flairButtonsContainer.append("button")
+const createButton = miscButtonsContainer.append("button")
     .text("Create New Node")
-    .style("position", "absolute")
-    .style("top", "5px")
-    .style("right", "320px")
+    .style("display", "inline-block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
     .style("pointer-events", "auto")
     .on("click", () => {
         addNodeWindow.style("display", "block");
         addNodeContent.html(addNodeContentHtml);
-        //descripContent.html(descripContentHtml);
     });
 
 const addNodeWindow = d3.select("body")
@@ -281,8 +254,41 @@ const addNodeContent = addNodeWindow.append("div")
     .style("z-index", "200")
     .style("overflow", "auto");
 
+const clearButton = miscButtonsContainer.append("button")
+    .text("Clear Filter")
+    .style("display", "inline-block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
+    .style("pointer-events", "auto")
+    .on("click", () => {
+        clearFlairFilter();
+    });
+
+const deleteFlairButton = miscButtonsContainer.append("button")
+    .text("Delete Flair")
+    .style("display", "inline-block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
+    .style("pointer-events", "auto")
+    .on("click", () => {
+        if (lastClickedButton && window.confirm("Are you sure you want to delete the node '" + lastClickedButton + "'?")) {
+            // Delete the node and its links
+            data.links = data.links.filter(link => link.source.name !== lastClickedButton && link.target.name !== lastClickedButton);
+            data.nodes = data.nodes.filter(node => node.name !== lastClickedButton);
+            // Update the graph
+            updateLinkGraph(data.links);
+            updateNodeGraph(data.nodes);
+            updateNodeLabels(data.nodes);
+            updateSimulation(data.nodes, data.links);
+            simulation.restart();
+            clearFlairFilter();
+            // Update the local storage with updated data
+            updateLocalStorage();
+        }
+    });
+
 let addNodeContentHtml = `
-    <br><br><strong>New name:</strong> <input type="text" id="new-name-input" value="${""}">
+    <br><strong>New name:</strong> <input type="text" id="new-name-input" value="${""}">
     <br><strong>New type:</strong> <input type="text" id="new-type-input" value="${""}">
     
     <br><strong>New description:</strong> <input type="text" id="new-description-input" value="${""}">
@@ -305,5 +311,14 @@ const addNodeButton = addNodeWindow.append("button")
         updateNodeLabels(data.nodes);
         updateSimulation(data.nodes, data.links);
         simulation.restart();
+        addNodeWindow.style("display", "none");
+        updateLocalStorage();
+    });
+
+const addNodeCancelButton = addNodeWindow.append("button")
+    .text("Cancel")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
         addNodeWindow.style("display", "none");
     });
