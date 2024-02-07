@@ -211,7 +211,15 @@ const downloadButton = miscButtonsContainer.append("button")
     .style("margin-left", "5px")
     .style("pointer-events", "auto")
     .on("click", () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+        const filteredNodes = data.nodes.map(({ id, name, type, description, url }) => ({ id, name, type, description, url }));
+        const filteredLinks = data.links.map(({ source, target, group }) => ({ source: source.name, target: target.name, group }));
+
+        const filteredData = {
+            nodes: filteredNodes,
+            links: filteredLinks
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(filteredData));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", "ProjectLibrary_data.json"); // Set the filename as "ProjectLibrary_data.json"

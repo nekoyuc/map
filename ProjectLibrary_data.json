@@ -21,9 +21,9 @@
         {
             "id": "David Mignot",
             "name": "David Mignot",
-            "url": "https://www.idflood.com/",
             "type": "Companies/Individuals",
-            "description": ""
+            "description": "",
+            "url": "https://www.idflood.com/"
         },
         {
             "id": "digital art",
@@ -34,23 +34,23 @@
         {
             "id": "City Pattern",
             "name": "City Pattern",
-            "url": "https://www.idflood.com/2019/03/city-pattern/",
             "type": "Visuals",
-            "description": ""
+            "description": "",
+            "url": "https://www.idflood.com/2019/03/city-pattern/"
         },
         {
             "id": "Natural artifact",
             "name": "Natural artifact",
-            "url": "https://knownorigin.io/gallery/226325-natural-artifact",
             "type": "Visuals",
-            "description": ""
+            "description": "",
+            "url": "https://knownorigin.io/gallery/226325-natural-artifact"
         },
         {
             "id": "明德学生中心",
             "name": "明德学生中心",
-            "url": "https://www.archdaily.com/936536/shenzhen-mingde-academy-o-office-architects?ad_medium=image_search",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/936536/shenzhen-mingde-academy-o-office-architects?ad_medium=image_search"
         },
         {
             "id": "O office Architects",
@@ -73,9 +73,9 @@
         {
             "id": "% Arabica",
             "name": "% Arabica",
-            "url": "https://www.archdaily.com/975025/percent-arabica-wide-and-narrow-alley-in-chengdu-blue-architecture-studio",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/975025/percent-arabica-wide-and-narrow-alley-in-chengdu-blue-architecture-studio"
         },
         {
             "id": "成都",
@@ -92,9 +92,9 @@
         {
             "id": "Hyde Sukhumvit 11 Building",
             "name": "Hyde Sukhumvit 11 Building",
-            "url": "https://www.archdaily.com/973398/hyde-sukhumvit-11-building-architects-49?ad_medium=image_search",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/973398/hyde-sukhumvit-11-building-architects-49?ad_medium=image_search"
         },
         {
             "id": "Architects 49",
@@ -123,9 +123,9 @@
         {
             "id": "山东青年政治学院科研创新区",
             "name": "山东青年政治学院科研创新区",
-            "url": "https://www.archdaily.com/924225/scientific-research-innovation-zone-of-shandong-youth-political-college-the-architecture-and-urban-planning-sau-college-of-shandong-jianzhu-university-plus-shandong-jianzhu-university-architectue-and-urban-planing-design-institute?ad_medium=image_search",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/924225/scientific-research-innovation-zone-of-shandong-youth-political-college-the-architecture-and-urban-planning-sau-college-of-shandong-jianzhu-university-plus-shandong-jianzhu-university-architectue-and-urban-planing-design-institute?ad_medium=image_search"
         },
         {
             "id": "济南",
@@ -137,7 +137,8 @@
             "id": "山东建筑大学建筑城规学院",
             "name": "山东建筑大学建筑城规学院",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": ""
         },
         {
             "id": "Hawkins Brown",
@@ -148,9 +149,9 @@
         {
             "id": "University of Oxford Beecroft Building",
             "name": "University of Oxford Beecroft Building",
-            "url": "https://www.archdaily.com/902141/university-of-oxford-beecroft-building-hawkins-brown?ad_medium=image_search",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/902141/university-of-oxford-beecroft-building-hawkins-brown?ad_medium=image_search"
         },
         {
             "id": "Oxfordshire",
@@ -161,9 +162,9 @@
         {
             "id": "富文乡中心小学",
             "name": "富文乡中心小学",
-            "url": "https://www.archdaily.cn/cn/931163/fu-wen-xiang-zhong-xin-xiao-xue-gai-zao-zhong-guo-mei-zhu-xue-yuan-feng-jing-jian-zhu-yan-jiu-yuan-zong-yuan-wang-wei-gong-zuo-shi",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.cn/cn/931163/fu-wen-xiang-zhong-xin-xiao-xue-gai-zao-zhong-guo-mei-zhu-xue-yuan-feng-jing-jian-zhu-yan-jiu-yuan-zong-yuan-wang-wei-gong-zuo-shi"
         },
         {
             "id": "中国美术学院风景建筑研究院总院",
@@ -180,9 +181,9 @@
         {
             "id": "Morpheus Hotel",
             "name": "Morpheus Hotel",
-            "url": "https://www.archdaily.com/896433/morpheus-hotel-zaha-hadid-architects",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/896433/morpheus-hotel-zaha-hadid-architects"
         },
         {
             "id": "curvature",
@@ -217,16 +218,16 @@
         {
             "id": "New Beginnings",
             "name": "New Beginnings",
-            "url": "https://www.youtube.com/watch?v=Q9EBlN7tl2M",
             "type": "Audio",
-            "description": ""
+            "description": "",
+            "url": "https://www.youtube.com/watch?v=Q9EBlN7tl2M"
         },
         {
             "id": "Vladimir Ossipoff",
             "name": "Vladimir Ossipoff",
-            "url": "https://en.wikipedia.org/wiki/Vladimir_Ossipoff",
             "type": "Companies/Individuals",
-            "description": ""
+            "description": "",
+            "url": "https://en.wikipedia.org/wiki/Vladimir_Ossipoff"
         },
         {
             "id": "Pauline Souza",
@@ -237,9 +238,9 @@
         {
             "id": "The Palestinian Museum",
             "name": "The Palestinian Museum",
-            "url": "https://www.archdaily.com/871986/the-palestinian-museum-heneghan-and-peng-architects",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/871986/the-palestinian-museum-heneghan-and-peng-architects"
         },
         {
             "id": "Heneghan Peng Architects",
@@ -250,9 +251,9 @@
         {
             "id": "石上 純也",
             "name": "石上 純也",
-            "url": "https://www.dezeen.com/tag/junya-ishigami/page/2",
             "type": "Companies/Individuals",
-            "description": ""
+            "description": "",
+            "url": "https://www.dezeen.com/tag/junya-ishigami/page/2"
         },
         {
             "id": "ObelArt Biotop Water Garden",
@@ -263,16 +264,16 @@
         {
             "id": "Tom Kundig",
             "name": "Tom Kundig",
-            "url": "https://en.wikipedia.org/wiki/Tom_Kundig",
             "type": "Companies/Individuals",
-            "description": ""
+            "description": "",
+            "url": "https://en.wikipedia.org/wiki/Tom_Kundig"
         },
         {
             "id": "Museo Domus",
             "name": "Museo Domus",
-            "url": "https://es.wikiarquitectura.com/edificio/Domus-Museo-Interactivo-del-Hombre/",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://es.wikiarquitectura.com/edificio/Domus-Museo-Interactivo-del-Hombre/"
         },
         {
             "id": "Arata Isozaki",
@@ -295,9 +296,9 @@
         {
             "id": "Glasgow School of Art Extension",
             "name": "Glasgow School of Art Extension",
-            "url": "https://www.barrywark.com/gsaextension",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.barrywark.com/gsaextension"
         },
         {
             "id": "Barry Wark",
@@ -314,9 +315,9 @@
         {
             "id": "Ha Long Villa",
             "name": "Ha Long Villa",
-            "url": "https://www.archdaily.com/938222/ha-long-villa-vtn-architects",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/938222/ha-long-villa-vtn-architects"
         },
         {
             "id": "VTN Architects",
@@ -327,9 +328,9 @@
         {
             "id": "钟书阁",
             "name": "钟书阁",
-            "url": "https://www.archdaily.cn/cn/943113/bei-jing-zhong-shu-ge-lao-fo-ye-bai-huo-dian-wei-xiang-guo-ji",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.cn/cn/943113/bei-jing-zhong-shu-ge-lao-fo-ye-bai-huo-dian-wei-xiang-guo-ji"
         },
         {
             "id": "X+Living",
@@ -352,9 +353,9 @@
         {
             "id": "Wuxi TAIHU Show Theatre",
             "name": "Wuxi TAIHU Show Theatre",
-            "url": "https://www.archdaily.com/930776/wuxi-taihu-show-theatre-sca-steven-chilton-architects",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/930776/wuxi-taihu-show-theatre-sca-steven-chilton-architects"
         },
         {
             "id": "Steven Chilton Architects",
@@ -371,9 +372,9 @@
         {
             "id": "Bendigo Hospital",
             "name": "Bendigo Hospital",
-            "url": "https://www.archdaily.com/938939/bendigo-hospital-silver-thomas-hanley-plus-bates-smart",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/938939/bendigo-hospital-silver-thomas-hanley-plus-bates-smart"
         },
         {
             "id": "Silver Thomas Hanley + Bates Smart",
@@ -390,9 +391,9 @@
         {
             "id": "Oikumene Church",
             "name": "Oikumene Church",
-            "url": "https://www.archdaily.com/940494/oikumene-church-tsds-interior-architect",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/940494/oikumene-church-tsds-interior-architect"
         },
         {
             "id": "Indonesia",
@@ -403,9 +404,9 @@
         {
             "id": "Dune House",
             "name": "Dune House",
-            "url": "https://www.archdaily.com/175734/dune-house-jva",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/175734/dune-house-jva"
         },
         {
             "id": "JVA",
@@ -434,9 +435,9 @@
         {
             "id": "Inside Out House",
             "name": "Inside Out House",
-            "url": "https://www.archdaily.com/560419/inside-out-takeshi-hosaka",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/560419/inside-out-takeshi-hosaka"
         },
         {
             "id": "Atelier Riri",
@@ -447,16 +448,16 @@
         {
             "id": "Container for Urban Living",
             "name": "Container for Urban Living",
-            "url": "https://www.archdaily.com/770703/container-for-urban-living-atelier-riri",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/770703/container-for-urban-living-atelier-riri"
         },
         {
             "id": "Pingshan Terrace",
             "name": "Pingshan Terrace",
-            "url": "https://www.archdaily.com/940764/pingshan-terrace-the-renovation-of-nanbu-water-purification-station-node-achitecture-and-urbanism",
             "type": "Architecture",
-            "description": ""
+            "description": "",
+            "url": "https://www.archdaily.com/940764/pingshan-terrace-the-renovation-of-nanbu-water-purification-station-node-achitecture-and-urbanism"
         },
         {
             "id": "NODE Architecture & Urbanism",
@@ -481,6 +482,228 @@
             "name": "MoMA",
             "type": "Locations",
             "description": ""
+        },
+        {
+            "name": "北國新聞赤羽ホール",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.nihonsekkei.co.jp/projects/3534/"
+        },
+        {
+            "name": "Nihon Sekkei",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "The Ordway Center for the Performing Arts – Concert Hall",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://akustiks.com/project/the-ordway-center-for-the-performing-arts-concert-hall/"
+        },
+        {
+            "name": "HGA",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Saint Paul (MN)",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "The Coolest White",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.coolestwhite.com/"
+        },
+        {
+            "name": "UNStudio",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "18 Septemberplein",
+            "type": "Architecture",
+            "description": "experiments with light",
+            "url": "https://www.unstudio.com/en/page/12329/18-septemberplein"
+        },
+        {
+            "name": "the Netherlands",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "lighting",
+            "type": "Flairs",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "House in Minohshinmachi",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.com/941071/house-in-minohshinmachi-yasuyuki-kitamura"
+        },
+        {
+            "name": "Yasuyuki Kitamura",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "2en1 Students Halls",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.com/940951/2en1-students-halls-bfv-architectes"
+        },
+        {
+            "name": "BFV Architectes",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "France",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Americans",
+            "type": "Visuals",
+            "description": "",
+            "url": "https://studiojoseph.com/americans"
+        },
+        {
+            "name": "Studio Joseph",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Pathé Foundation",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.com/550625/pathe-foundation-renzo-piano"
+        },
+        {
+            "name": "Renzo Piano Building Workshop",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Paris",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "南香楼艺术酒店",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.cn/cn/912970/nan-xiang-lou-yi-zhu-jiu-dian-bei-sen-hao-si-she-ji-shi-wu-suo"
+        },
+        {
+            "name": "贝森豪斯设计事务所",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Setre Naramachi Hotel",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.com/931148/setre-naramachi-hotel-ryuichi-ashizawa-architects-and-associates"
+        },
+        {
+            "name": "Ryuichi Ashizawa Architects & associates",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "奈良町",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "XOCO 325",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.com/799146/xoco-325-ddg"
+        },
+        {
+            "name": "DDG",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "New York",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "facade",
+            "type": "Flairs",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Seattle Central Library",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.archdaily.com/11651/seattle-central-library-oma-lmn"
+        },
+        {
+            "name": "OMA",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "LMN",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Seattle",
+            "type": "Locations",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Architecture Drawing Prize 2019",
+            "type": "Visuals",
+            "description": "",
+            "url": "https://www.archdaily.com/928644/world-architecture-festival-announces-winners-of-the-architecture-drawing-prize-2019"
+        },
+        {
+            "name": "Book Mountain",
+            "type": "Architecture",
+            "description": "",
+            "url": "https://www.architectural-review.com/today/book-mountain-mvrdvs-library-in-spijkenisee-rotterdam"
+        },
+        {
+            "name": "MVRDV",
+            "type": "Companies/Individuals",
+            "description": "",
+            "url": ""
+        },
+        {
+            "name": "Rotterdam",
+            "type": "Locations",
+            "description": "",
+            "url": ""
         }
     ],
     "links": [
@@ -563,11 +786,6 @@
             "source": "济南",
             "target": "山东青年政治学院科研创新区",
             "group": "___is the location of___"
-        },
-        {
-            "source": "山东建筑大学建筑城规学院",
-            "target": "山东青年政治学院科研创新区",
-            "group": "___is the author of___"
         },
         {
             "source": "Hawkins Brown",
@@ -742,6 +960,136 @@
         {
             "source": "MoMA",
             "target": "All Freedom in Every Sense",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "Nihon Sekkei",
+            "target": "北國新聞赤羽ホール",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "HGA",
+            "target": "The Ordway Center for the Performing Arts – Concert Hall",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "Saint Paul (MN)",
+            "target": "The Ordway Center for the Performing Arts – Concert Hall",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "UNStudio",
+            "target": "The Coolest White",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "UNStudio",
+            "target": "18 Septemberplein",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "the Netherlands",
+            "target": "18 Septemberplein",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "lighting",
+            "target": "18 Septemberplein",
+            "group": "___is the flair of___"
+        },
+        {
+            "source": "Yasuyuki Kitamura",
+            "target": "House in Minohshinmachi",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "BFV Architectes",
+            "target": "2en1 Students Halls",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "France",
+            "target": "2en1 Students Halls",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "Studio Joseph",
+            "target": "Americans",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "Renzo Piano Building Workshop",
+            "target": "Pathé Foundation",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "Paris",
+            "target": "Pathé Foundation",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "贝森豪斯设计事务所",
+            "target": "南香楼艺术酒店",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "深圳",
+            "target": "南香楼艺术酒店",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "Modern Chinese",
+            "target": "南香楼艺术酒店",
+            "group": "___is the flair of___"
+        },
+        {
+            "source": "Ryuichi Ashizawa Architects & associates",
+            "target": "Setre Naramachi Hotel",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "奈良町",
+            "target": "Setre Naramachi Hotel",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "DDG",
+            "target": "XOCO 325",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "New York",
+            "target": "XOCO 325",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "facade",
+            "target": "XOCO 325",
+            "group": "___is the flair of___"
+        },
+        {
+            "source": "OMA",
+            "target": "Seattle Central Library",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "LMN",
+            "target": "Seattle Central Library",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "Seattle",
+            "target": "Seattle Central Library",
+            "group": "___is the location of___"
+        },
+        {
+            "source": "MVRDV",
+            "target": "Book Mountain",
+            "group": "___is the author of___"
+        },
+        {
+            "source": "Rotterdam",
+            "target": "Book Mountain",
             "group": "___is the location of___"
         }
     ]
