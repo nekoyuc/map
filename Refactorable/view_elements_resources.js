@@ -12,18 +12,18 @@ const chartHeight = 900;
 let nextId = 0;
 
 // Set the description window dimensions and offsets
-const descripWidth = 800;
-const descripHeight = 1000;
+const descripWidth = 600;
+const descripHeight = 800;
 const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
 // Set the colors for different node types
-const architectureColor = "#d69d69";
+const artColor = "#d69d69";
 const locationsColor = "#93e18a";
 const flairsColor = "#eaeb81";
 const companiesIndividualsColor = "#a64d64";
-const visualsColor = "#5a7699";
-const audioColor = "#7ea5d4";
+const researchColor = "#5a7699";
+const businessColor = "#7ea5d4";
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
@@ -149,6 +149,14 @@ const deleteButton = descripWindow.append("button")
         }
     })
 
+const closeButton = descripWindow.append("button")
+    .text("Close")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        descripWindow.style("display", "none");
+    });
+
 const saveButton = descripWindow.append("button")
     .text("Save")
     .style("display", "none")
@@ -180,6 +188,8 @@ const backButton = descripWindow.append("button")
         saveButton.style("display", "none")
         backButton.style("display", "none")
     });
+
+
 
 // Flair button container, including flair buttons, clear button, and create button
 const flairButtonsContainer = d3.select("body")
@@ -220,7 +230,7 @@ const createButton = miscButtonsContainer.append("button")
     .style("pointer-events", "auto")
     .on("click", () => {
         addNodeWindow.style("display", "block");
-        displayNodeContent();
+        addNodeContent();
     });
 
 const addNodeWindow = d3.select("body")
@@ -239,7 +249,7 @@ const addNodeWindow = d3.select("body")
     .style("background-color", "#fff")
     .style("z-index", "200");
 
-const addNodeContent = addNodeWindow.append("div")
+const newNodeContent = addNodeWindow.append("div")
     .style("padding", "10px")
     .style("word-wrap", "break-word")
     .style("max-width", "100%") // Set the maximum width to 100%

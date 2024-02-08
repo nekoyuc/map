@@ -41,14 +41,14 @@ function updateLinkData(node) {
     if (nodeType === "Companies/Individuals" && node !== null) {
         data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of") || link.target.name === node.name));
     }
-    
+
     // If this node already exists and is/becomes a location, remove all the links that are from the wrong group
     else if (nodeType === "Locations" && node !== null) {
         data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of") || link.target.name === node.name));
     }
-    
+
     // If this node is a project
-    else if (nodeType == "Architecture" || nodeType == "Visuals" || nodeType == "Audio") {
+    else if (nodeType == "Art" || nodeType == "Research" || nodeType == "Business") {
         // Remove all existing links
         if (node !== null) { data.links = data.links.filter(link => !(link.source.name === node.name || link.target.name === node.name)) };
         targetNode = (node === null ? data.nodes.find(node => node.name === document.getElementById("new-name-input").value) : node);
@@ -142,22 +142,22 @@ function updateNodeGraph(nodes) {
     nodeGraph.attr("fill", d => {
         if (d.type === "Locations") {
             return locationsColor;
-        } else if (d.type === "Architecture") {
-            return architectureColor
+        } else if (d.type === "Art") {
+            return artColor
         } else if (d.type === "Flairs") {
             return flairsColor;
         } else if (d.type === "Companies/Individuals") {
             return companiesIndividualsColor;
-        } else if (d.type === "Visuals") {
-            return visualsColor;
-        } else if (d.type === "Audio") {
-            return audioColor;
+        } else if (d.type === "Research") {
+            return researchColor;
+        } else if (d.type === "Business") {
+            return businessColor;
         } else {
             return otherColor;
         }
     }
     )
-        .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize))
+        .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Art" || d.type === "Research" || d.type === "Business" ? projectNodeSize : topicNodeSize))
         .call(drag(simulation))
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut);
@@ -221,9 +221,9 @@ function flairClick(d) {
 
 function clearFlairFilter() {
     nodeGraph.attr("opacity", nodeNormalOpacity);
-        linkGraph.attr("stroke-width", linkNormalWidth);
-        linkGraph.attr("stroke-opacity", linkNormalOpacity);
-        lastClickedButton = null;
+    linkGraph.attr("stroke-width", linkNormalWidth);
+    linkGraph.attr("stroke-opacity", linkNormalOpacity);
+    lastClickedButton = null;
 }
 
 const zoom = d3.zoom()
@@ -250,12 +250,18 @@ function updateWindowAttr(d) {
     const connectingLinks = linkGraph.filter(linkData => linkData.source.name === d.name || linkData.target.name === d.name);
     const connectedNodes = [...new Set(connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]))];
 
-    const authorNodes = connectedNodes.filter(nodeData => nodeData.type === "Companies/Individuals");
-    const locationNodes = connectedNodes.filter(nodeData => nodeData.type === "Locations");
-    const flairNodes = connectedNodes.filter(nodeData => nodeData.type === "Flairs");
+    if (d.type === "Art" || d.type === "Research" || d.type === "Business") {
+        const authorNodes = connectedNodes.filter(nodeData => nodeData.type === "Companies/Individuals");
+        const locationNodes = connectedNodes.filter(nodeData => nodeData.type === "Locations");
+        descripWindow.attr("window-author", authorNodes.map(nodeData => nodeData.name).join(", "));
+        descripWindow.attr("window-location", locationNodes.map(nodeData => nodeData.name).join(", "));
+    }
+    else {
+        descripWindow.attr("window-author", "");
+        descripWindow.attr("window-location", "");
+    }
 
-    descripWindow.attr("window-author", authorNodes.map(nodeData => nodeData.name).join(", "));
-    descripWindow.attr("window-location", locationNodes.map(nodeData => nodeData.name).join(", "));
+    const flairNodes = connectedNodes.filter(nodeData => nodeData.type === "Flairs");
     descripWindow.attr("window-flair", flairNodes.map(nodeData => nodeData.name).join(", "));
 }
 
@@ -270,10 +276,7 @@ function clearWindowAttr() {
 }
 
 function updateWindowDisplay(goal = "preview") {
-    //    if (descripWindow.attr("data-source") == "new") {
-    if (goal == "new") {
-        displayWindowNew();
-    } else if (goal == "preview") {
+    if (goal == "preview") {
         //    } else if (descripWindow.attr("data-source") == "preview") {
         displayWindowPreview();
     } else if (goal == "edit") {
@@ -282,27 +285,12 @@ function updateWindowDisplay(goal = "preview") {
     }
 }
 
-function displayWindowNew() {
-    let descripContentHtml = `
-    <br><strong>Create A New Node</strong>
-    <br><br><strong>Name:</strong> <input type="text" id="name-input" value="">
-    <br><strong>Type:</strong> <input type="text" id="type-input" value="">
-    <br><strong>Update description:</strong> <input type="text" id="description-input" value="">
-    <br><strong>Update URL:</strong> <input type="text" id="url-input" value="">
-
-    <br><br><strong>Update author:</strong> <input type="text" id="authors-input" value="">
-    <br><strong>Update location:</strong> <input type="text" id="locations-input" value="">
-    <br><strong>Update flairs:</strong> (separate flairs with ",") <input type="text" id="flairs-input" value="">
-    `;
-    return descripContent.html(descripContentHtml);
-}
-
 function displayWindowPreview() {
     // Set the description content to include "description"
-    let descripContentHtml = `<strong>Description:</strong> ${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}`;
+    let descripContentHtml = `<strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}`;
     // Set the description content to include "url" attributes if "url" exists
     if (descripWindow.attr("window-url")) {
-        descripContentHtml += `<br><strong>URL:</strong> <a href="${descripWindow.attr("window-url")}" target="_blank">${descripWindow.attr("window-url")}</a>`;
+        descripContentHtml += `<br><strong style="font-family: Futura Bk BT;">URL:</strong> <a href="${descripWindow.attr("window-url")}" target="_blank">${descripWindow.attr("window-url")}</a>`;
         descripContentHtml += `<br><iframe src="${descripWindow.attr("window-url")}" width="100%" height=600px></iframe>`;
     }
     return descripContent.html(descripContentHtml);
@@ -311,53 +299,77 @@ function displayWindowPreview() {
 function displayWindowEdit() {
     let descripContentHtml = `
 
-    <br><strong>Name:</strong> ${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}
-    <br><strong>Type:</strong> ${descripWindow.attr("window-type") ? descripWindow.attr("window-type") : ""}
-    <br><strong>Description:</strong> ${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}
-    <br><strong>URL:</strong> ${descripWindow.attr("window-url") ? descripWindow.attr("window-url") : ""}
-    <br><br><strong>Author:</strong> ${descripWindow.attr("window-author") ? descripWindow.attr("window-author") : ""}
-    <br><strong>Location:</strong> ${descripWindow.attr("window-location") ? descripWindow.attr("window-location") : ""}
-    <br><strong>Flairs:</strong> ${descripWindow.attr("window-flair") ? descripWindow.attr("window-flair") : ""}
+    <br><strong style="font-family: Futura Bk BT;">Name:</strong> ${descripWindow.attr("window-name") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-name")}</span>` : ""}
+    <br><strong style="font-family: Futura Bk BT;">Type:</strong> ${descripWindow.attr("window-type") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-type")}</span>` : ""}
+    <br><strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-description")}</span>` : ""}
+    <br><strong style="font-family: Futura Bk BT;">URL:</strong> ${descripWindow.attr("window-url") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-url")}</span>` : ""}
+    <br><br><strong style="font-family: Futura Bk BT;">Author:</strong> ${descripWindow.attr("window-author") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-author")}</span>` : ""}
+    <br><strong style="font-family: Futura Bk BT;">Location:</strong> ${descripWindow.attr("window-location") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-location")}</span>` : ""}
+    <br><strong style="font-family: Futura Bk BT;">Flairs:</strong> ${descripWindow.attr("window-flair") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-flair")}</span>` : ""}
 
-    <br><br><strong>Update name:</strong> <input type="text" id="name-input" value="${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}">
-    <br><strong>Update type:</strong> <input type="text" id="type-input" value="${descripWindow.attr("window-type") ? descripWindow.attr("window-type") : ""}">
-    <br><strong>Update description:</strong> <input type="text" id="description-input" value="${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}">
-    <br><strong>Update URL:</strong> <input type="text" id="url-input" value="${descripWindow.attr("window-url") ? descripWindow.attr("window-url") : ""}">
+    <br><br><br><strong style="font-family: Futura Bk BT;">Update name:</strong>
+    <br><input type="text" id="name-input" value="${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
 
-    <br><br><strong>Update author:</strong> <input type="text" id="authors-input" value="${descripWindow.attr("window-author")}">
-    <br><strong>Update location:</strong> <input type="text" id="locations-input" value="${descripWindow.attr("window-location")}">
-    <br><strong>Update flairs:</strong> (separate flairs with ",") <input type="text" id="flairs-input" value="${descripWindow.attr("window-flair")}">
+    <br><br><strong style="font-family: Futura Bk BT;">Update type:</strong>
+    <br><input type="text" id="type-input" value="${descripWindow.attr("window-type") ? descripWindow.attr("window-type") : ""}" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
+
+    <br><br><strong style="font-family: Futura Bk BT;">Update description:</strong>
+    <br><textarea id="description-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;">${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}</textarea>
+
+    <br><br><strong style="font-family: Futura Bk BT;">Update URL:</strong>
+    <br><textarea id="url-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;">${descripWindow.attr("window-url") ? descripWindow.attr("window-url") : ""}</textarea>
+
+
+    <br><br><br><strong style="font-family: Futura Bk BT;">Update author:</strong>
+    <br><textarea id="authors-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">${descripWindow.attr("window-author")}</textarea>
+
+    <br><br><strong style="font-family: Futura Bk BT;">Update location:</strong>
+    <br><textarea id="locations-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">${descripWindow.attr("window-location")}</textarea>
+
+    <br><br><strong style="font-family: Futura Bk BT;">Update flairs:</strong> (separate flairs with ",")
+    <br><textarea id="flairs-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">${descripWindow.attr("window-flair")}</textarea>
     `;
     return descripContent.html(descripContentHtml);
 }
 
-function displayNodeContent() {
-    let displayNodeContentHtml = `
-    <br><strong>New name:</strong> <input type="text" id="new-name-input" value="${""}">
-    <br><strong>New type:</strong> <input type="text" id="new-type-input" value="${""}">
-    
-    <br><strong>New description:</strong> <input type="text" id="new-description-input" value="${""}">
-    <br><strong>New URL:</strong> <input type="text" id="new-url-input" value="${""}">
+function addNodeContent() {
+    let addNodeContentHtml = `
+    <br><strong style="font-family: Futura Bk BT;">New name:</strong>
+    <br><textarea id="new-name-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
 
-    <br><br><strong>New author:</strong> <input type="text" id="new-authors-input" value="${""}">
-    <br><strong>New location:</strong> <input type="text" id="new-locations-input" value="${""}">
-    <br><strong>New flairs:</strong> (separate flairs with ",") <input type="text" id="new-flairs-input" value="${""}">
+    <br><br><strong style="font-family: Futura Bk BT;">New type:</strong>
+    <br><textarea id="new-type-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
+    
+    <br><br><strong style="font-family: Futura Bk BT;">New description:</strong>
+    <br><textarea id="new-description-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;"></textarea>
+
+    <br><br><strong style="font-family: Futura Bk BT;">New URL:</strong>
+    <br><textarea id="new-url-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;"></textarea>
+
+    <br><br><br><strong style="font-family: Futura Bk BT;">New author:</strong>
+    <br><textarea id="new-authors-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
+
+    <br><br><strong style="font-family: Futura Bk BT;">New location:</strong>
+    <br><textarea id="new-locations-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
+
+    <br><br><strong style="font-family: Futura Bk BT;">New flairs:</strong> (separate flairs with ",")
+    <br><textarea id="new-flairs-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
     `;
-    return addNodeContent.html(displayNodeContentHtml);
+    return newNodeContent.html(addNodeContentHtml);
 }
 
 function handleMouseOver(event, d) {
     descripToggle = false;
     updateWindowAttr(d);
     d3.select(this)
-        .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? hoveredProjectNodeSize : hoveredTopicNodeSize))
+        .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === "Art" || d.type === "Research" || d.type === "Business" ? hoveredProjectNodeSize : hoveredTopicNodeSize))
         .attr("fill", "#808080");
 
     if (d.type !== "Flairs") {
         updateWindowDisplay("preview")
         descripWindow.style("display", "block")
             .style("left", `${event.clientX + 10}px`)
-            .style("top", `${event.clientY + 10}px`);
+            .style("top", `${event.clientY - descripHeight / 2}px`);
         saveButton.style("display", "none");
         backButton.style("display", "none");
     };
@@ -365,8 +377,8 @@ function handleMouseOver(event, d) {
 
 function handleMouseOut(event, d) {
     d3.select(this)
-        .attr("r", d => d.type === "Flairs" ? flairNodeSize : d.type === "Architecture" || d.type === "Visuals" || d.type === "Audio" ? projectNodeSize : topicNodeSize)
-        .attr("fill", d => d.type === "Locations" ? locationsColor : d.type === "Architecture" ? architectureColor : d.type === "Flairs" ? flairsColor : d.type === "Companies/Individuals" ? companiesIndividualsColor : d.type === "Visuals" ? visualsColor : d.type === "Audio" ? audioColor : otherColor);
+        .attr("r", d => d.type === "Flairs" ? flairNodeSize : d.type === "Art" || d.type === "Research" || d.type === "Business" ? projectNodeSize : topicNodeSize)
+        .attr("fill", d => d.type === "Locations" ? locationsColor : d.type === "Art" ? artColor : d.type === "Flairs" ? flairsColor : d.type === "Companies/Individuals" ? companiesIndividualsColor : d.type === "Research" ? researchColor : d.type === "Business" ? businessColor : otherColor);
 
     simulation.restart(); // Resume the simulation
 
