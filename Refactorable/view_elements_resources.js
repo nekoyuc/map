@@ -114,12 +114,15 @@ const descripContent = descripWindow.append("div")
     .style("padding", "10px")
     .style("word-wrap", "break-word")
     .style("max-width", "100%") // Set the maximum width to 100%
+    .style("max-height", `${descripHeight - 60}px`) // Subtract the height of the buttons from descripHeight
+    .style("overflow", "auto") // Enable scrolling if content overflows
     .style("z-index", "100");
 
 const editButton = descripWindow.append("button")
     .text("Edit")
     .style("display", "inline-block")
     .style("margin-left", "10px")
+    .style("margin-top", "10px")
     .on("click", () => {
         saveButton.style("display", "inline-block")
         backButton.style("display", "inline-block")

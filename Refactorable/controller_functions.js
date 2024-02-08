@@ -287,10 +287,10 @@ function updateWindowDisplay(goal = "preview") {
 
 function displayWindowPreview() {
     // Set the description content to include "description"
-    let descripContentHtml = `<strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}`;
+    let descripContentHtml = `<strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-description")}</span>` : ""}`;
     // Set the description content to include "url" attributes if "url" exists
     if (descripWindow.attr("window-url")) {
-        descripContentHtml += `<br><strong style="font-family: Futura Bk BT;">URL:</strong> <a href="${descripWindow.attr("window-url")}" target="_blank">${descripWindow.attr("window-url")}</a>`;
+        descripContentHtml += `<br><strong style="font-family: Futura Bk BT;">URL:</strong> <a href="${descripWindow.attr("window-url")}" target="_blank" style="font-family: Futura Bk BT;">${descripWindow.attr("window-url")}</a>`;
         descripContentHtml += `<br><iframe src="${descripWindow.attr("window-url")}" width="100%" height=600px></iframe>`;
     }
     return descripContent.html(descripContentHtml);
@@ -299,7 +299,7 @@ function displayWindowPreview() {
 function displayWindowEdit() {
     let descripContentHtml = `
 
-    <br><strong style="font-family: Futura Bk BT;">Name:</strong> ${descripWindow.attr("window-name") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-name")}</span>` : ""}
+    <strong style="font-family: Futura Bk BT;">Name:</strong> ${descripWindow.attr("window-name") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-name")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Type:</strong> ${descripWindow.attr("window-type") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-type")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-description")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">URL:</strong> ${descripWindow.attr("window-url") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-url")}</span>` : ""}
@@ -334,7 +334,7 @@ function displayWindowEdit() {
 
 function addNodeContent() {
     let addNodeContentHtml = `
-    <br><strong style="font-family: Futura Bk BT;">New name:</strong>
+    <strong style="font-family: Futura Bk BT;">New name:</strong>
     <br><textarea id="new-name-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
 
     <br><br><strong style="font-family: Futura Bk BT;">New type:</strong>
