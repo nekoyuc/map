@@ -303,10 +303,12 @@ function displayWindowEdit() {
     <br><strong style="font-family: Futura Bk BT;">Type:</strong> ${descripWindow.attr("window-type") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-type")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-description")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">URL:</strong> ${descripWindow.attr("window-url") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-url")}</span>` : ""}
+
     <br><br><strong style="font-family: Futura Bk BT;">Author:</strong> ${descripWindow.attr("window-author") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-author")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Location:</strong> ${descripWindow.attr("window-location") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-location")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Flairs:</strong> ${descripWindow.attr("window-flair") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-flair")}</span>` : ""}
 
+    
     <br><br><br><strong style="font-family: Futura Bk BT;">Update name:</strong>
     <br><input type="text" id="name-input" value="${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
 

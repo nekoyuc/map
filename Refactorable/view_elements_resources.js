@@ -256,8 +256,34 @@ const newNodeContent = addNodeWindow.append("div")
     .style("padding", "10px")
     .style("word-wrap", "break-word")
     .style("max-width", "100%") // Set the maximum width to 100%
+    .style("max-height", "740px")
     .style("z-index", "200")
     .style("overflow", "auto");
+
+const addNodeButton = addNodeWindow.append("button")
+    .text("Add Node")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .style("margin-top", "10px")
+    .on("click", () => {
+        updateNodeData(null);
+        updateLinkData(null);
+        updateLinkGraph(data.links);
+        updateNodeGraph(data.nodes);
+        updateNodeLabels(data.nodes);
+        updateSimulation(data.nodes, data.links);
+        simulation.restart();
+        addNodeWindow.style("display", "none");
+        updateLocalStorage();
+    });
+
+const addNodeCancelButton = addNodeWindow.append("button")
+    .text("Cancel")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        addNodeWindow.style("display", "none");
+    });
 
 const clearButton = miscButtonsContainer.append("button")
     .text("Clear Filter")
@@ -290,28 +316,4 @@ const deleteFlairButton = miscButtonsContainer.append("button")
             // Update the local storage with updated data
             updateLocalStorage();
         }
-    });
-
-const addNodeButton = addNodeWindow.append("button")
-    .text("Add Node")
-    .style("display", "inline-block")
-    .style("margin-left", "10px")
-    .on("click", () => {
-        updateNodeData(null);
-        updateLinkData(null);
-        updateLinkGraph(data.links);
-        updateNodeGraph(data.nodes);
-        updateNodeLabels(data.nodes);
-        updateSimulation(data.nodes, data.links);
-        simulation.restart();
-        addNodeWindow.style("display", "none");
-        updateLocalStorage();
-    });
-
-const addNodeCancelButton = addNodeWindow.append("button")
-    .text("Cancel")
-    .style("display", "inline-block")
-    .style("margin-left", "10px")
-    .on("click", () => {
-        addNodeWindow.style("display", "none");
     });
