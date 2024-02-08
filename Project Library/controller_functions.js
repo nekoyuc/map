@@ -331,6 +331,21 @@ function displayWindowEdit() {
     return descripContent.html(descripContentHtml);
 }
 
+function displayNodeContent() {
+    let displayNodeContentHtml = `
+    <br><strong>New name:</strong> <input type="text" id="new-name-input" value="${""}">
+    <br><strong>New type:</strong> <input type="text" id="new-type-input" value="${""}">
+    
+    <br><strong>New description:</strong> <input type="text" id="new-description-input" value="${""}">
+    <br><strong>New URL:</strong> <input type="text" id="new-url-input" value="${""}">
+
+    <br><br><strong>New author:</strong> <input type="text" id="new-authors-input" value="${""}">
+    <br><strong>New location:</strong> <input type="text" id="new-locations-input" value="${""}">
+    <br><strong>New flairs:</strong> (separate flairs with ",") <input type="text" id="new-flairs-input" value="${""}">
+    `;
+    return addNodeContent.html(displayNodeContentHtml);
+}
+
 function handleMouseOver(event, d) {
     descripToggle = false;
     updateWindowAttr(d);

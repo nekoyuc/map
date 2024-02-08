@@ -220,7 +220,7 @@ const createButton = miscButtonsContainer.append("button")
     .style("pointer-events", "auto")
     .on("click", () => {
         addNodeWindow.style("display", "block");
-        addNodeContent.html(addNodeContentHtml);
+        displayNodeContent();
     });
 
 const addNodeWindow = d3.select("body")
@@ -278,18 +278,6 @@ const deleteFlairButton = miscButtonsContainer.append("button")
             updateLocalStorage();
         }
     });
-
-let addNodeContentHtml = `
-    <br><strong>New name:</strong> <input type="text" id="new-name-input" value="${""}">
-    <br><strong>New type:</strong> <input type="text" id="new-type-input" value="${""}">
-    
-    <br><strong>New description:</strong> <input type="text" id="new-description-input" value="${""}">
-    <br><strong>New URL:</strong> <input type="text" id="new-url-input" value="${""}">
-
-    <br><br><strong>New author:</strong> <input type="text" id="new-authors-input" value="${""}">
-    <br><strong>New location:</strong> <input type="text" id="new-locations-input" value="${""}">
-    <br><strong>New flairs:</strong> (separate flairs with ",") <input type="text" id="new-flairs-input" value="${""}">
-    `;
 
 const addNodeButton = addNodeWindow.append("button")
     .text("Add Node")
