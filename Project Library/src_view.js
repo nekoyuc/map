@@ -2,6 +2,12 @@
 
 parameters and definitions for the view elements
 
+To customize the project, change:
+- topic names
+- topic colors
+- node sizes
+- link colors
+
 */
 
 
@@ -12,30 +18,35 @@ const chartHeight = 900;
 let nextId = 0;
 
 // Set the description window dimensions and offsets
-const descripWidth = 800;
-const descripHeight = 1000;
+const descripWidth = 600;
+const descripHeight = 600;
 const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
+// Set the topic names
+const topic1Name = "Architecture";
+const topic2Name = "Visuals";
+const topic3Name = "Audio";
+
 // Set the colors for different node types
-const architectureColor = "#d69d69";
-const locationsColor = "#93e18a";
-const flairsColor = "#eaeb81";
-const companiesIndividualsColor = "#a64d64";
-const visualsColor = "#5a7699";
-const audioColor = "#7ea5d4";
+const topic1Color = "#9f4cfd"; // topic1 = architecture
+const locationsColor = "#ffca3a";
+const flairsColor = "#ff595e";
+const makersColor = "#ff924c";
+const topic2Color = "#e16be6"; // topic2 = visuals
+const topic3Color = "#fb89cc"; // topic3 = audio
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
-const projectNodeSize = 13;
-const hoveredProjectNodeSize = 16;
-const topicNodeSize = 10;
-const hoveredTopicNodeSize = 13;
-const flairNodeSize = 6;
+const topicNodeSize = 13; // topics
+const hoveredTopicNodeSize = 16;
+const backgroundNodeSize = 10; // locations and Makers
+const hoveredBackgroundNodeSize = 13;
+const flairNodeSize = 6; // flairs
 const hoveredFlairNodeSize = 8;
 
 // Set the colors for different link groups
-const authorLinkColor = companiesIndividualsColor;
+const authorLinkColor = makersColor;
 const locationLinkColor = locationsColor;
 const flairLinkColor = flairsColor;
 const otherLinkColor = otherColor;
@@ -62,6 +73,7 @@ const svg = d3.create("svg")
     .attr("height", chartHeight)
     .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
     .attr("style", "max-width: 100%; height: auto; position: absolute; top: 40; left: 60;")
+    
 
 svg.append("rect")
     .attr("x", -chartWidth / 2)
@@ -70,7 +82,7 @@ svg.append("rect")
     .attr("height", chartHeight)
     .attr("stroke", "#999")
     .attr("stroke-width", 1)
-    .attr("fill", "none");
+    .attr("fill", "#fff"); // Change background color to black
 
 let linkGraph = svg.append("g")
     .attr("stroke-width", linkNormalWidth)
@@ -84,7 +96,6 @@ let nodeGraph = svg.append("g")
     .selectAll("circle")
     .data([{}])
     .join("circle")
-    .attr("stroke", "#fff")
     .attr("stroke-width", 0.6)
     .attr("r", 5)
     .attr("fill", "#000");
@@ -114,12 +125,15 @@ const descripContent = descripWindow.append("div")
     .style("padding", "10px")
     .style("word-wrap", "break-word")
     .style("max-width", "100%") // Set the maximum width to 100%
+    .style("max-height", `${descripHeight - 60}px`) // Subtract the height of the buttons from descripHeight
+    .style("overflow", "auto") // Enable scrolling if content overflows
     .style("z-index", "100");
 
 const editButton = descripWindow.append("button")
     .text("Edit")
     .style("display", "inline-block")
     .style("margin-left", "10px")
+    .style("margin-top", "10px")
     .on("click", () => {
         saveButton.style("display", "inline-block")
         backButton.style("display", "inline-block")
@@ -149,6 +163,14 @@ const deleteButton = descripWindow.append("button")
         }
     })
 
+const closeButton = descripWindow.append("button")
+    .text("Close")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        descripWindow.style("display", "none");
+    });
+
 const saveButton = descripWindow.append("button")
     .text("Save")
     .style("display", "none")
@@ -162,6 +184,7 @@ const saveButton = descripWindow.append("button")
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);
+            updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
             updateSimulation(data.nodes, data.links);
             simulation.restart();
             //updateFlairButtons(data.nodes);
@@ -188,21 +211,21 @@ const flairButtonsContainer = d3.select("body")
     .style("pointer-events", "none")
     .style("top", "0")
     .style("left", "0")
-    .style("width", `${chartWidth * 0.7}px`) // Set the width to 70% of chartWidth
+    .style("width", `${chartWidth * 0.5}px`) // Set the width to 60% of chartWidth
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
+
+let flairButtons = flairButtonsContainer.selectAll("button")
 
 const miscButtonsContainer = d3.select("body")
     .insert("block", "svg")
     .style("position", "absolute")
     .style("pointer-events", "none")
     .style("top", "0")
-    .style("left", `${chartWidth * 0.7}px`) // Set the left position to the width of the flairButtonsContainer
-    .style("width", `${chartWidth * 0.3}px`) // Set the width to 30% of chartWidth
+    .style("left", `${chartWidth * 0.6}px`) // Set the left position to 60% of chartWidth
+    .style("width", `${chartWidth * 0.4}px`) // Set the width to 40% of chartWidth
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
-
-let flairButtons = flairButtonsContainer.selectAll("button")
 
 const downloadButton = miscButtonsContainer.append("button")
     .text("Download Data")
@@ -220,7 +243,7 @@ const createButton = miscButtonsContainer.append("button")
     .style("pointer-events", "auto")
     .on("click", () => {
         addNodeWindow.style("display", "block");
-        displayNodeContent();
+        addNodeContent();
     });
 
 const addNodeWindow = d3.select("body")
@@ -239,21 +262,84 @@ const addNodeWindow = d3.select("body")
     .style("background-color", "#fff")
     .style("z-index", "200");
 
-const addNodeContent = addNodeWindow.append("div")
+const newNodeContent = addNodeWindow.append("div")
     .style("padding", "10px")
     .style("word-wrap", "break-word")
     .style("max-width", "100%") // Set the maximum width to 100%
+    .style("max-height", "740px")
     .style("z-index", "200")
     .style("overflow", "auto");
 
+const addNodeButton = addNodeWindow.append("button")
+    .text("Add Node")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .style("margin-top", "10px")
+    .on("click", () => {
+        updateNodeData(null);
+        updateLinkData(null);
+        updateLinkGraph(data.links);
+        updateNodeGraph(data.nodes);
+        updateNodeLabels(data.nodes);
+        updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
+        updateSimulation(data.nodes, data.links);
+        simulation.restart();
+        addNodeWindow.style("display", "none");
+        updateLocalStorage();
+    });
+
+const addNodeCancelButton = addNodeWindow.append("button")
+    .text("Cancel")
+    .style("display", "inline-block")
+    .style("margin-left", "10px")
+    .on("click", () => {
+        addNodeWindow.style("display", "none");
+    });
+
 const clearButton = miscButtonsContainer.append("button")
-    .text("Clear Filter")
+    .text("Clear Flair Filter")
     .style("display", "inline-block")
     .style("margin-top", "5px")
     .style("margin-left", "5px")
     .style("pointer-events", "auto")
     .on("click", () => {
         clearFlairFilter();
+    });
+
+const changeFlairButton = miscButtonsContainer.append("button")
+    .text("Change Flair")
+    .style("display", "inline-block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
+    .style("pointer-events", "auto")
+    .on("click", () => {
+
+            if (lastClickedButton !== null) {
+                const newFlairName = window.prompt("Enter the new flair name for the node '" + lastClickedButton + "':");
+            if (newFlairName && newFlairName.length > 0) {
+                // Update the node and its links
+                data.nodes.find(node => node.name === lastClickedButton).name = newFlairName;
+                data.links.forEach(link => {
+                    if (link.source.name === lastClickedButton) {
+                        link.source.name = newFlairName;
+                    }
+                    if (link.target.name === lastClickedButton) {
+                        link.target.name = newFlairName;
+                    }
+                });
+                // Update the graph
+                updateLinkGraph(data.links);
+                updateNodeGraph(data.nodes);
+                updateNodeLabels(data.nodes);
+                updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
+                updateSimulation(data.nodes, data.links);
+                simulation.restart();
+                // Clear highlighting of the flair button
+                clearFlairFilter();
+                // Update the local storage with updated data
+                updateLocalStorage();
+            }
+            }
     });
 
 const deleteFlairButton = miscButtonsContainer.append("button")
@@ -271,34 +357,12 @@ const deleteFlairButton = miscButtonsContainer.append("button")
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);
+            updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
             updateSimulation(data.nodes, data.links);
             simulation.restart();
+            // Clear highlighting of the flair button
             clearFlairFilter();
             // Update the local storage with updated data
             updateLocalStorage();
         }
-    });
-
-const addNodeButton = addNodeWindow.append("button")
-    .text("Add Node")
-    .style("display", "inline-block")
-    .style("margin-left", "10px")
-    .on("click", () => {
-        updateNodeData(null);
-        updateLinkData(null);
-        updateLinkGraph(data.links);
-        updateNodeGraph(data.nodes);
-        updateNodeLabels(data.nodes);
-        updateSimulation(data.nodes, data.links);
-        simulation.restart();
-        addNodeWindow.style("display", "none");
-        updateLocalStorage();
-    });
-
-const addNodeCancelButton = addNodeWindow.append("button")
-    .text("Cancel")
-    .style("display", "inline-block")
-    .style("margin-left", "10px")
-    .on("click", () => {
-        addNodeWindow.style("display", "none");
     });

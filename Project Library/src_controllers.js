@@ -102,7 +102,7 @@ function updateLocalStorage() {
         nodes: data.nodes.map(({ id, name, type, description, url }) => ({ id, name, type, description, url })),
         links: data.links.map(({ source, target, group }) => ({ source: source.name, target: target.name, group }))
     };
-    localStorage.setItem("Refactorable_data_local", JSON.stringify(newData));
+    localStorage.setItem("ProjectLibrary_data_local", JSON.stringify(newData));
 }
 
 function downloadJSON() {
@@ -117,7 +117,7 @@ function downloadJSON() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(filteredData));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "Refactorable_data.json"); // Set the filename as "Refactorable_data.json"
+    downloadAnchorNode.setAttribute("download", "ProjectLibrary_data.json"); // Set the filename as "Refactorable_data.json"
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();

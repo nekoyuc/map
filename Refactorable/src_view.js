@@ -29,24 +29,24 @@ const topic2Name = "Research";
 const topic3Name = "Business";
 
 // Set the colors for different node types
-const topic1Color = "#6a4c93"; // topic1 = technical
+const topic1Color = "#0d41e1"; // topic1 = technical
 const locationsColor = "#ffca3a";
 const flairsColor = "#ff595e";
-const companiesIndividualsColor = "#ff924c";
-const topic2Color = "#1982c4"; // topic2 = research
-const topic3Color = "#8ac926"; // topic3 = business
+const makersColor = "#ff924c";
+const topic2Color = "#0a85ed"; // topic2 = research
+const topic3Color = "#07c8f9"; // topic3 = business
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
 const topicNodeSize = 13; // topics
 const hoveredTopicNodeSize = 16;
-const backgroundNodeSize = 10; // locations and companies/individuals
+const backgroundNodeSize = 10; // locations and Makers
 const hoveredBackgroundNodeSize = 13;
 const flairNodeSize = 6; // flairs
 const hoveredFlairNodeSize = 8;
 
 // Set the colors for different link groups
-const authorLinkColor = companiesIndividualsColor;
+const authorLinkColor = makersColor;
 const locationLinkColor = locationsColor;
 const flairLinkColor = flairsColor;
 const otherLinkColor = otherColor;

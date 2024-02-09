@@ -12,9 +12,10 @@
 
 <body>
     <script src="../d3.v7.min.js"></script>
-    <script src="controller_functions.js?v=1"></script>
-    <script src="view_elements_resources.js?v=1"></script>
+    <script src="src_controllers.js"></script>
+    <script src="src_view.js"></script>
     <script>
+        // To customize the project, match the local storage name with the name used in the load_data.html file
         const data = JSON.parse(localStorage.getItem('ProjectLibrary_data_local'));
         console.log("Hello world");
 
@@ -43,7 +44,6 @@
 
         // Create the force simulation
         var simulation = d3.forceSimulation(data.nodes)
-            .force("link", d3.forceLink(data.links).id(d => d.name).distance(100).strength(0.5))
             .force("charge", d3.forceManyBody().strength(-100))
             .force("x", d3.forceX())
             .force("y", d3.forceY());
@@ -75,6 +75,7 @@
         updateNodeGraph(data.nodes)
         updateNodeLabels(data.nodes)
         nodeLabels.style("display", "none")
+        updateSimulation(data.nodes, data.links)
         updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"))
 
         // Create the graph
