@@ -165,7 +165,7 @@ function updateNodeGraph(nodes) {
 
 function updateSimulation(nodes, links) {
     simulation = simulation.nodes(nodes)
-        .force("link", d3.forceLink(links).id(d => d.name).distance(100).strength(0.5));
+        .force("link", d3.forceLink(links).id(d => d.name).distance(150).strength(1.5));
 }
 
 function updateNodeLabels(nodes) {
@@ -229,20 +229,6 @@ function clearFlairFilter() {
 
 const zoom = d3.zoom()
     .on("zoom", zoomed);
-
-    /*
-function zoomed(event) {
-    const { transform } = event;
-    const mouseX = event.sourceEvent.clientX - chartWidth / 2;
-    const mouseY = event.sourceEvent.clientY - chartHeight / 2;
-    const scale = transform.k;
-    const translateX = -mouseX * (scale - 1);
-    const translateY = -mouseY * (scale - 1);
-    //svg.attr("transform", `scale(${scale})`);
-    svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
-    nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
-}
-*/
 
 let prevMouseX = 0;
 let prevMouseY = 0;

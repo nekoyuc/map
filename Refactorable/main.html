@@ -43,7 +43,6 @@
 
         // Create the force simulation
         var simulation = d3.forceSimulation(data.nodes)
-            .force("link", d3.forceLink(data.links).id(d => d.name).distance(100).strength(0.5))
             .force("charge", d3.forceManyBody().strength(-100))
             .force("x", d3.forceX())
             .force("y", d3.forceY());
@@ -75,6 +74,7 @@
         updateNodeGraph(data.nodes)
         updateNodeLabels(data.nodes)
         nodeLabels.style("display", "none")
+        updateSimulation(data.nodes, data.links)
         updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"))
 
         // Create the graph

@@ -200,7 +200,7 @@ const flairButtonsContainer = d3.select("body")
     .style("pointer-events", "none")
     .style("top", "0")
     .style("left", "0")
-    .style("width", `${chartWidth * 0.6}px`) // Set the width to 60% of chartWidth
+    .style("width", `${chartWidth * 0.5}px`) // Set the width to 60% of chartWidth
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
 
