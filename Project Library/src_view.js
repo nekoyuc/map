@@ -34,7 +34,7 @@ const locationsColor = "#ffca3a";
 const flairsColor = "#ff595e";
 const makersColor = "#ff924c";
 const topic2Color = "#e16be6"; // topic2 = visuals
-const topic3Color = "#fb89cc"; // topic3 = audio
+const topic3Color = "#f9b4ed"; // topic3 = audio
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
