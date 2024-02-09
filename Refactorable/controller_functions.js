@@ -48,7 +48,7 @@ function updateLinkData(node) {
     }
 
     // If this node is a project
-    else if (nodeType == "Art" || nodeType == "Research" || nodeType == "Business") {
+    else if (nodeType == "Technical" || nodeType == "Research" || nodeType == "Business") {
         // Remove all existing links
         if (node !== null) { data.links = data.links.filter(link => !(link.source.name === node.name || link.target.name === node.name)) };
         targetNode = (node === null ? data.nodes.find(node => node.name === document.getElementById("new-name-input").value) : node);
@@ -142,8 +142,8 @@ function updateNodeGraph(nodes) {
     nodeGraph.attr("fill", d => {
         if (d.type === "Locations") {
             return locationsColor;
-        } else if (d.type === "Art") {
-            return artColor
+        } else if (d.type === "Technical") {
+            return technicalColor
         } else if (d.type === "Flairs") {
             return flairsColor;
         } else if (d.type === "Companies/Individuals") {
@@ -157,7 +157,7 @@ function updateNodeGraph(nodes) {
         }
     }
     )
-        .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Art" || d.type === "Research" || d.type === "Business" ? projectNodeSize : topicNodeSize))
+        .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === "Technical" || d.type === "Research" || d.type === "Business" ? projectNodeSize : topicNodeSize))
         .call(drag(simulation))
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut);
@@ -177,7 +177,8 @@ function updateNodeLabels(nodes) {
         //.attr("font-size", 20)
         .attr("font-family", "Futura Bk BT")
         .attr("font-weight", "bold")
-        .text(d => d.name)
+        //.attr("fill", "#black") // Set the text color to white
+        .text(d => d.name);
     //.style("display", "none")
 }
 
@@ -250,7 +251,7 @@ function updateWindowAttr(d) {
     const connectingLinks = linkGraph.filter(linkData => linkData.source.name === d.name || linkData.target.name === d.name);
     const connectedNodes = [...new Set(connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]))];
 
-    if (d.type === "Art" || d.type === "Research" || d.type === "Business") {
+    if (d.type === "Technical" || d.type === "Research" || d.type === "Business") {
         const authorNodes = connectedNodes.filter(nodeData => nodeData.type === "Companies/Individuals");
         const locationNodes = connectedNodes.filter(nodeData => nodeData.type === "Locations");
         descripWindow.attr("window-author", authorNodes.map(nodeData => nodeData.name).join(", "));
@@ -364,7 +365,7 @@ function handleMouseOver(event, d) {
     descripToggle = false;
     updateWindowAttr(d);
     d3.select(this)
-        .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === "Art" || d.type === "Research" || d.type === "Business" ? hoveredProjectNodeSize : hoveredTopicNodeSize))
+        .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === "Technical" || d.type === "Research" || d.type === "Business" ? hoveredProjectNodeSize : hoveredTopicNodeSize))
         .attr("fill", "#808080");
 
     if (d.type !== "Flairs") {
@@ -379,8 +380,8 @@ function handleMouseOver(event, d) {
 
 function handleMouseOut(event, d) {
     d3.select(this)
-        .attr("r", d => d.type === "Flairs" ? flairNodeSize : d.type === "Art" || d.type === "Research" || d.type === "Business" ? projectNodeSize : topicNodeSize)
-        .attr("fill", d => d.type === "Locations" ? locationsColor : d.type === "Art" ? artColor : d.type === "Flairs" ? flairsColor : d.type === "Companies/Individuals" ? companiesIndividualsColor : d.type === "Research" ? researchColor : d.type === "Business" ? businessColor : otherColor);
+        .attr("r", d => d.type === "Flairs" ? flairNodeSize : d.type === "Technical" || d.type === "Research" || d.type === "Business" ? projectNodeSize : topicNodeSize)
+        .attr("fill", d => d.type === "Locations" ? locationsColor : d.type === "Technical" ? technicalColor : d.type === "Flairs" ? flairsColor : d.type === "Companies/Individuals" ? companiesIndividualsColor : d.type === "Research" ? researchColor : d.type === "Business" ? businessColor : otherColor);
 
     simulation.restart(); // Resume the simulation
 

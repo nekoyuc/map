@@ -18,12 +18,12 @@ const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
 // Set the colors for different node types
-const artColor = "#d69d69";
-const locationsColor = "#93e18a";
-const flairsColor = "#eaeb81";
-const companiesIndividualsColor = "#a64d64";
-const researchColor = "#5a7699";
-const businessColor = "#7ea5d4";
+const technicalColor = "#6a4c93";
+const locationsColor = "#ffca3a";
+const flairsColor = "#ff595e";
+const companiesIndividualsColor = "#ff924c";
+const researchColor = "#1982c4";
+const businessColor = "#8ac926";
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
@@ -62,6 +62,7 @@ const svg = d3.create("svg")
     .attr("height", chartHeight)
     .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
     .attr("style", "max-width: 100%; height: auto; position: absolute; top: 40; left: 60;")
+    
 
 svg.append("rect")
     .attr("x", -chartWidth / 2)
@@ -70,7 +71,7 @@ svg.append("rect")
     .attr("height", chartHeight)
     .attr("stroke", "#999")
     .attr("stroke-width", 1)
-    .attr("fill", "none");
+    .attr("fill", "#fff"); // Change background color to black
 
 let linkGraph = svg.append("g")
     .attr("stroke-width", linkNormalWidth)
@@ -84,7 +85,6 @@ let nodeGraph = svg.append("g")
     .selectAll("circle")
     .data([{}])
     .join("circle")
-    .attr("stroke", "#fff")
     .attr("stroke-width", 0.6)
     .attr("r", 5)
     .attr("fill", "#000");
