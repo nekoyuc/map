@@ -230,6 +230,7 @@ function clearFlairFilter() {
 const zoom = d3.zoom()
     .on("zoom", zoomed);
 
+    /*
 function zoomed(event) {
     const { transform } = event;
     const mouseX = event.sourceEvent.clientX - chartWidth / 2;
@@ -240,6 +241,31 @@ function zoomed(event) {
     //svg.attr("transform", `scale(${scale})`);
     svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
     nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
+}
+*/
+
+let prevMouseX = 0;
+let prevMouseY = 0;
+
+function zoomed(event) {
+    const { transform } = event;
+    const mouseX = event.sourceEvent.clientX;
+    const mouseY = event.sourceEvent.clientY;
+    const scale = transform.k;
+
+    // Calculate the incremental translation using movementX and movementY
+    const translateX = event.sourceEvent.movementX * (1 - scale) + parseFloat(svg.attr("data-translate-x") || 0);
+    const translateY = event.sourceEvent.movementY * (1 - scale) + parseFloat(svg.attr("data-translate-y") || 0);
+
+    svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
+    svg.attr("data-translate-x", translateX);
+    svg.attr("data-translate-y", translateY);
+
+    nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
+
+    // Update previous mouse positions
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
 }
 
 function updateWindowAttr(d) {
@@ -364,6 +390,7 @@ function addNodeContent() {
 function handleMouseOver(event, d) {
     descripToggle = false;
     updateWindowAttr(d);
+    
     d3.select(this)
         .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === "Technical" || d.type === "Research" || d.type === "Business" ? hoveredProjectNodeSize : hoveredTopicNodeSize))
         .attr("fill", "#808080");
@@ -371,11 +398,12 @@ function handleMouseOver(event, d) {
     if (d.type !== "Flairs") {
         updateWindowDisplay("preview")
         descripWindow.style("display", "block")
-            .style("left", `${event.clientX + 10}px`)
+            .style("left", `${event.clientX + 30}px`)
             .style("top", `${event.clientY - descripHeight / 2}px`);
         saveButton.style("display", "none");
         backButton.style("display", "none");
     };
+    simulation.stop(); // Pause the simulation
 }
 
 function handleMouseOut(event, d) {
