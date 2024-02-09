@@ -39,12 +39,12 @@ function updateLinkData(node) {
 
     // If this node already exists and is/becomes an author, remove all the links that are from the wrong group
     if (nodeType === "Companies/Individuals" && node !== null) {
-        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of") || link.target.name === node.name));
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of___") || link.target.name === node.name));
     }
     
     // If this node already exists and is/becomes a location, remove all the links that are from the wrong group
     else if (nodeType === "Locations" && node !== null) {
-        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of") || link.target.name === node.name));
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of___") || link.target.name === node.name));
     }
     
     // If this node is a project

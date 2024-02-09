@@ -13,7 +13,7 @@ let nextId = 0;
 
 // Set the description window dimensions and offsets
 const descripWidth = 600;
-const descripHeight = 800;
+const descripHeight = 600;
 const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
@@ -173,6 +173,7 @@ const saveButton = descripWindow.append("button")
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);
+            updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
             updateSimulation(data.nodes, data.links);
             simulation.restart();
             //updateFlairButtons(data.nodes);
@@ -192,8 +193,6 @@ const backButton = descripWindow.append("button")
         backButton.style("display", "none")
     });
 
-
-
 // Flair button container, including flair buttons, clear button, and create button
 const flairButtonsContainer = d3.select("body")
     .insert("block", "svg")
@@ -201,21 +200,21 @@ const flairButtonsContainer = d3.select("body")
     .style("pointer-events", "none")
     .style("top", "0")
     .style("left", "0")
-    .style("width", `${chartWidth * 0.7}px`) // Set the width to 70% of chartWidth
+    .style("width", `${chartWidth * 0.6}px`) // Set the width to 60% of chartWidth
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
+
+let flairButtons = flairButtonsContainer.selectAll("button")
 
 const miscButtonsContainer = d3.select("body")
     .insert("block", "svg")
     .style("position", "absolute")
     .style("pointer-events", "none")
     .style("top", "0")
-    .style("left", `${chartWidth * 0.7}px`) // Set the left position to the width of the flairButtonsContainer
-    .style("width", `${chartWidth * 0.3}px`) // Set the width to 30% of chartWidth
+    .style("left", `${chartWidth * 0.6}px`) // Set the left position to 60% of chartWidth
+    .style("width", `${chartWidth * 0.4}px`) // Set the width to 40% of chartWidth
     .style("height", `${chartHeight}px`)
     .style("z-index", "999");
-
-let flairButtons = flairButtonsContainer.selectAll("button")
 
 const downloadButton = miscButtonsContainer.append("button")
     .text("Download Data")
@@ -271,6 +270,7 @@ const addNodeButton = addNodeWindow.append("button")
         updateLinkGraph(data.links);
         updateNodeGraph(data.nodes);
         updateNodeLabels(data.nodes);
+        updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
         updateSimulation(data.nodes, data.links);
         simulation.restart();
         addNodeWindow.style("display", "none");
@@ -286,13 +286,49 @@ const addNodeCancelButton = addNodeWindow.append("button")
     });
 
 const clearButton = miscButtonsContainer.append("button")
-    .text("Clear Filter")
+    .text("Clear Flair Filter")
     .style("display", "inline-block")
     .style("margin-top", "5px")
     .style("margin-left", "5px")
     .style("pointer-events", "auto")
     .on("click", () => {
         clearFlairFilter();
+    });
+
+const changeFlairButton = miscButtonsContainer.append("button")
+    .text("Change Flair")
+    .style("display", "inline-block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
+    .style("pointer-events", "auto")
+    .on("click", () => {
+
+            if (lastClickedButton !== null) {
+                const newFlairName = window.prompt("Enter the new flair name for the node '" + lastClickedButton + "':");
+            if (newFlairName && newFlairName.length > 0) {
+                // Update the node and its links
+                data.nodes.find(node => node.name === lastClickedButton).name = newFlairName;
+                data.links.forEach(link => {
+                    if (link.source.name === lastClickedButton) {
+                        link.source.name = newFlairName;
+                    }
+                    if (link.target.name === lastClickedButton) {
+                        link.target.name = newFlairName;
+                    }
+                });
+                // Update the graph
+                updateLinkGraph(data.links);
+                updateNodeGraph(data.nodes);
+                updateNodeLabels(data.nodes);
+                updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
+                updateSimulation(data.nodes, data.links);
+                simulation.restart();
+                // Clear highlighting of the flair button
+                clearFlairFilter();
+                // Update the local storage with updated data
+                updateLocalStorage();
+            }
+            }
     });
 
 const deleteFlairButton = miscButtonsContainer.append("button")
@@ -310,8 +346,10 @@ const deleteFlairButton = miscButtonsContainer.append("button")
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);
+            updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
             updateSimulation(data.nodes, data.links);
             simulation.restart();
+            // Clear highlighting of the flair button
             clearFlairFilter();
             // Update the local storage with updated data
             updateLocalStorage();

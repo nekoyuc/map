@@ -39,12 +39,12 @@ function updateLinkData(node) {
 
     // If this node already exists and is/becomes an author, remove all the links that are from the wrong group
     if (nodeType === "Companies/Individuals" && node !== null) {
-        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of") || link.target.name === node.name));
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of___") || (link.target.name === node.name && link.group !== "___is the flair of___")));
     }
 
     // If this node already exists and is/becomes a location, remove all the links that are from the wrong group
     else if (nodeType === "Locations" && node !== null) {
-        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of") || link.target.name === node.name));
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of___") || (link.target.name === node.name && link.group !== "___is the flair of___")));
     }
 
     // If this node is a project
@@ -185,7 +185,7 @@ function updateFlairButtons(nodes) {
     flairButtons = flairButtons.data(nodes)
         .join("button")
         .text(d => d.name)
-        .attr("flair", d => d.name) // Set the name attribute to the node name
+        .attr("flair-name", d => d.name) // Set the name attribute to the node name
         .style("pointer-events", "auto")
         .style("margin-top", "5px")
         .style("margin-left", "5px") // Move the buttons down by 10px
@@ -198,14 +198,14 @@ function flairClick(d) {
     linkGraph.attr("stroke-width", linkNormalWidth);
 
     // If the button is clicked again, clear the filter
-    if (d3.select(this).attr("flair") === lastClickedButton) {
+    if (d3.select(this).attr("flair-name") === lastClickedButton) {
         lastClickedButton = null;
     } else {
-        const connectingLinks = linkGraph.filter(linkData => linkData.source.name === d3.select(this).attr("flair") || linkData.target.name === d3.select(this).attr("flair"));
+        const connectingLinks = linkGraph.filter(linkData => linkData.source.name === d3.select(this).attr("flair-name") || linkData.target.name === d3.select(this).attr("flair-name"));
         connectingLinks.attr("stroke-opacity", linkConnectedOpacity);
         connectingLinks.attr("stroke-width", linkConnectedWidth);
 
-        const disconnectedLinks = linkGraph.filter(linkData => linkData.source.name !== d3.select(this).attr("flair") && linkData.target.name !== d3.select(this).attr("flair"));
+        const disconnectedLinks = linkGraph.filter(linkData => linkData.source.name !== d3.select(this).attr("flair-name") && linkData.target.name !== d3.select(this).attr("flair-name"));
         disconnectedLinks.attr("stroke-opacity", linkDisconnectedOpacity);
 
         const disconnectedNodes = nodeGraph.filter(nodeData => {
@@ -215,7 +215,7 @@ function flairClick(d) {
         disconnectedNodes.attr("opacity", nodeDisconnectedOpacity);
 
         // Update the last clicked button icon
-        lastClickedButton = d3.select(this).attr("flair");
+        lastClickedButton = d3.select(this).attr("flair-name");
     }
 }
 
@@ -308,7 +308,7 @@ function displayWindowEdit() {
     <br><strong style="font-family: Futura Bk BT;">Location:</strong> ${descripWindow.attr("window-location") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-location")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Flairs:</strong> ${descripWindow.attr("window-flair") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-flair")}</span>` : ""}
 
-    
+
     <br><br><br><strong style="font-family: Futura Bk BT;">Update name:</strong>
     <br><input type="text" id="name-input" value="${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
 
