@@ -2,6 +2,12 @@
 
 parameters and definitions for the view elements
 
+To customize the project, change:
+- topic names
+- topic colors
+- node sizes
+- link colors
+
 */
 
 
@@ -17,21 +23,26 @@ const descripHeight = 600;
 const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
+// Set the topic names
+const topic1Name = "Technical";
+const topic2Name = "Research";
+const topic3Name = "Business";
+
 // Set the colors for different node types
-const technicalColor = "#6a4c93";
+const topic1Color = "#6a4c93"; // topic1 = technical
 const locationsColor = "#ffca3a";
 const flairsColor = "#ff595e";
 const companiesIndividualsColor = "#ff924c";
-const researchColor = "#1982c4";
-const businessColor = "#8ac926";
+const topic2Color = "#1982c4"; // topic2 = research
+const topic3Color = "#8ac926"; // topic3 = business
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
-const projectNodeSize = 13;
-const hoveredProjectNodeSize = 16;
-const topicNodeSize = 10;
-const hoveredTopicNodeSize = 13;
-const flairNodeSize = 6;
+const topicNodeSize = 13; // topics
+const hoveredTopicNodeSize = 16;
+const backgroundNodeSize = 10; // locations and companies/individuals
+const hoveredBackgroundNodeSize = 13;
+const flairNodeSize = 6; // flairs
 const hoveredFlairNodeSize = 8;
 
 // Set the colors for different link groups

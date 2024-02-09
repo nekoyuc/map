@@ -12,9 +12,10 @@
 
 <body>
     <script src="../d3.v7.min.js"></script>
-    <script src="controller_functions.js?v=1"></script>
-    <script src="view_elements_resources.js?v=1"></script>
+    <script src="src_controllers.js"></script>
+    <script src="src_view.js"></script>
     <script>
+        // To customize the project, match the local storage name with the name used in the load_data.html file
         const data = JSON.parse(localStorage.getItem('Refactorable_data_local'));
         console.log("Hello world");
 
