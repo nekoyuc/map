@@ -29,7 +29,7 @@ const topic2Name = "Research";
 const topic3Name = "Business";
 
 // Set the colors for different node types
-const topic1Color = "#0d41e1"; // topic1 = technical
+const topic1Color = "#063e99"; // topic1 = technical
 const locationsColor = "#ffca3a";
 const flairsColor = "#ff595e";
 const makersColor = "#ff924c";
@@ -176,20 +176,25 @@ const saveButton = descripWindow.append("button")
     .style("display", "none")
     .style("margin-left", "30px")
     .on("click", () => {
-        const targetNode = data.nodes.find(node => node.name == descripWindow.attr('window-name'));
+        const targetNode = data.nodes.find(node => node.name == descripWindow.attr('window-name'));     
         if (targetNode) {
+            // Update nodes and links
             updateNodeData(targetNode);
             updateLinkData(targetNode);
 
+            // Update the graph
             updateLinkGraph(data.links);
             updateNodeGraph(data.nodes);
             updateNodeLabels(data.nodes);
             updateFlairButtons(data.nodes.filter(d => d.type === "Flairs"));
             updateSimulation(data.nodes, data.links);
             simulation.restart();
-            //updateFlairButtons(data.nodes);
+            
+            // Update the window attributes
             updateWindowAttr(targetNode);
             updateWindowDisplay("edit");
+
+            // Update the local storage with updated data
             updateLocalStorage();
         }
     });

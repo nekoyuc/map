@@ -22,10 +22,21 @@ function createLinkGraph() {
 
 function updateNodeData(node) {
     if (node !== null) {
+        const oldNodeName = node.name;
         node.name = document.getElementById("name-input").value;
         node.type = document.getElementById("type-input").value;
         node.description = document.getElementById("description-input").value;
         node.url = document.getElementById("url-input").value;
+        /*
+        if (oldNodeName === node.name) return;
+        data.links.forEach(link => {
+            if (link.source.name === oldNodeName) {
+                link.source.name = node.name;
+            } else if (link.target.name === oldNodeName) {
+                link.target.name = node.name
+            }
+        });
+        */
     }
     else {
         data.nodes.push({
@@ -383,7 +394,7 @@ function addNodeContent() {
 function handleMouseOver(event, d) {
     descripToggle = false;
     updateWindowAttr(d);
-    
+
     d3.select(this)
         .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? hoveredTopicNodeSize : hoveredBackgroundNodeSize))
         .attr("fill", "#808080");
