@@ -73,7 +73,7 @@ const svg = d3.create("svg")
     .attr("height", chartHeight)
     .attr("viewBox", [-chartWidth / 2, -chartHeight / 2, chartWidth, chartHeight])
     .attr("style", "max-width: 100%; height: auto; position: absolute; top: 40; left: 60;")
-    
+
 
 svg.append("rect")
     .attr("x", -chartWidth / 2)
@@ -314,8 +314,8 @@ const changeFlairButton = miscButtonsContainer.append("button")
     .style("pointer-events", "auto")
     .on("click", () => {
 
-            if (lastClickedButton !== null) {
-                const newFlairName = window.prompt("Enter the new flair name for the node '" + lastClickedButton + "':");
+        if (lastClickedButton !== null) {
+            const newFlairName = window.prompt("Enter the new flair name for the node '" + lastClickedButton + "':");
             if (newFlairName && newFlairName.length > 0) {
                 // Update the node and its links
                 data.nodes.find(node => node.name === lastClickedButton).name = newFlairName;
@@ -339,7 +339,7 @@ const changeFlairButton = miscButtonsContainer.append("button")
                 // Update the local storage with updated data
                 updateLocalStorage();
             }
-            }
+        }
     });
 
 const deleteFlairButton = miscButtonsContainer.append("button")
@@ -366,3 +366,22 @@ const deleteFlairButton = miscButtonsContainer.append("button")
             updateLocalStorage();
         }
     });
+
+const searchBox = miscButtonsContainer.append("input")
+    .attr("type", "text")
+    .attr("placeholder", "Search for Node")
+    .attr("id", "searchInput") // Set the element ID to "searchInput"
+    .style("display", "block")
+    .style("margin-top", "5px")
+    .style("margin-left", "5px")
+    .style("pointer-events", "auto");
+
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', () => {
+    const searchText = searchInput.value.toLowerCase();
+    const filteredNodes = nodeGraph.filter(nodeData => nodeData.name.toLowerCase().includes(searchText));
+    const unfilteredNodes = nodeGraph.filter(nodeData => !nodeData.name.toLowerCase().includes(searchText));
+    filteredNodes.attr("opacity", nodeNormalOpacity);
+    unfilteredNodes.attr("opacity", nodeDisconnectedOpacity);
+});

@@ -372,7 +372,6 @@ const deleteFlairButton = miscButtonsContainer.append("button")
         }
     });
 
-
 const searchBox = miscButtonsContainer.append("input")
     .attr("type", "text")
     .attr("placeholder", "Search for Node")
