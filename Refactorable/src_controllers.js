@@ -245,12 +245,8 @@ function clearFlairFilter() {
     lastClickedButton = null;
 }
 
-
 const zoom = d3.zoom()
     .on("zoom", zoomed);
-
-let prevMouseX = 0;
-let prevMouseY = 0;
 
 function zoomed(event) {
     const { transform } = event;
@@ -267,10 +263,6 @@ function zoomed(event) {
     svg.attr("data-translate-y", translateY);
 
     nodeLabels.style("display", d => transform.k >= nodeLabelDisplayExtent ? "block" : "none");
-
-    // Update previous mouse positions
-    prevMouseX = mouseX;
-    prevMouseY = mouseY;
 }
 
 function updateWindowAttr(d) {
