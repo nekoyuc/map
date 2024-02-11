@@ -245,6 +245,7 @@ function clearFlairFilter() {
     lastClickedButton = null;
 }
 
+
 const zoom = d3.zoom()
     .on("zoom", zoomed);
 
