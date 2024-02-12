@@ -250,13 +250,13 @@ const zoom = d3.zoom()
 
 function zoomed(event) {
     const { transform } = event;
-    const mouseX = event.sourceEvent.clientX;
-    const mouseY = event.sourceEvent.clientY;
+    //const mouseX = event.sourceEvent.clientX;
+    //const mouseY = event.sourceEvent.clientY;
     const scale = transform.k;
 
     // Calculate the incremental translation using movementX and movementY
-    const translateX = event.sourceEvent.movementX * (1 - scale) + parseFloat(svg.attr("data-translate-x") || 0);
-    const translateY = event.sourceEvent.movementY * (1 - scale) + parseFloat(svg.attr("data-translate-y") || 0);
+    const translateX = event.sourceEvent.movementX * (1 - scale) * 2 + parseFloat(svg.attr("data-translate-x") || 0);
+    const translateY = event.sourceEvent.movementY * (1 - scale) * 2 + parseFloat(svg.attr("data-translate-y") || 0);
 
     svg.attr("transform", `translate(${translateX}, ${translateY}) scale(${scale})`);
     svg.attr("data-translate-x", translateX);
