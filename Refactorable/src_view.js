@@ -302,7 +302,7 @@ const addNodeCancelButton = addNodeWindow.append("button")
     });
 
 const clearButton = miscButtonsContainer.append("button")
-    .text("Clear Flair Filter")
+    .text("Clear Filter")
     .style("display", "inline-block")
     .style("margin-top", "5px")
     .style("margin-left", "5px")
