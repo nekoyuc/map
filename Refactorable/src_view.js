@@ -29,12 +29,12 @@ const topic2Name = "Research";
 const topic3Name = "Business";
 
 // Set the colors for different node types
-const topic1Color = "#063e99"; // topic1 = technical
+const topic1Color = "#1F456E"; // topic1 = technical
 const locationsColor = "#ffca3a";
 const flairsColor = "#ff595e";
 const makersColor = "#ff924c";
-const topic2Color = "#0a85ed"; // topic2 = research
-const topic3Color = "#07c8f9"; // topic3 = business
+const topic2Color = "#1034A6"; // topic2 = research
+const topic3Color = "#63C5DA"; // topic3 = business
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
