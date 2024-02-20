@@ -190,6 +190,7 @@ function updateNodeLabels(nodes) {
 }
 
 function updateFlairButtons(nodes) {
+    nodes.sort((a, b) => a.name.localeCompare(b.name)); // Sort nodes by name in alphabetical order
     flairButtons = flairButtons.data(nodes)
         .join("button")
         .text(d => d.name)
@@ -379,7 +380,7 @@ function addNodeContent() {
 function handleMouseOver(event, d) {
     descripToggle = false;
     updateWindowAttr(d);
-    
+
     d3.select(this)
         .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? hoveredTopicNodeSize : hoveredBackgroundNodeSize))
         .attr("fill", "#808080");

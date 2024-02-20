@@ -201,6 +201,7 @@ function updateNodeLabels(nodes) {
 }
 
 function updateFlairButtons(nodes) {
+    nodes.sort((a, b) => a.name.localeCompare(b.name)); // Sort nodes by name in alphabetical order
     flairButtons = flairButtons.data(nodes)
         .join("button")
         .text(d => d.name)
