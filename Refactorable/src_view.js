@@ -212,7 +212,7 @@ const backButton = descripWindow.append("button")
 // Flair button container, including flair buttons, clear button, and create button
 const flairButtonsContainer = d3.select("body")
     .insert("block", "svg")
-    .style("position", "absolute")
+    .style("position", "fixed") // Set the position to fixed
     .style("pointer-events", "none")
     .style("top", "0")
     .style("left", "0")
@@ -224,7 +224,7 @@ let flairButtons = flairButtonsContainer.selectAll("button")
 
 const miscButtonsContainer = d3.select("body")
     .insert("block", "svg")
-    .style("position", "absolute")
+    .style("position", "fixed")
     .style("pointer-events", "none")
     .style("top", "0")
     .style("left", `${chartWidth * 0.6}px`) // Set the left position to 60% of chartWidth
