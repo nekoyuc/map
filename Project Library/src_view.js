@@ -24,17 +24,20 @@ const descripOffsetX = 10; // Offset the description window horizontally
 const descripOffsetY = -100; // Offset the description window vertically
 
 // Set the topic names
-const topic1Name = "Architecture";
-const topic2Name = "Visuals";
-const topic3Name = "Audio";
+const topic1Name = "Architecture"; // main topic
+const topic2Name = "Visuals"; // main topic
+const topic3Name = "Audio"; // main topic
+const topic4Name = "Makers"; // supporting topic
+const topic5Name = "Locations"; // supporting topic
+const topic6Name = "Flairs"; // supporting topic
 
 // Set the colors for different node types
 const topic1Color = "#9f4cfd"; // topic1 = architecture
-const locationsColor = "#ffca3a";
-const flairsColor = "#ff595e";
-const makersColor = "#ff924c";
 const topic2Color = "#e16be6"; // topic2 = visuals
 const topic3Color = "#f9b4ed"; // topic3 = audio
+const topic4Color = "#ff924c";
+const topic5Color = "#ffca3a";
+const topic6Color = "#ff595e";
 const otherColor = "#a3a3a3";
 
 // Set the node sizes
@@ -46,9 +49,9 @@ const flairNodeSize = 6; // flairs
 const hoveredFlairNodeSize = 8;
 
 // Set the colors for different link groups
-const makerLinkColor = makersColor;
-const locationLinkColor = locationsColor;
-const flairLinkColor = flairsColor;
+const makerLinkColor = topic4Color;
+const locationLinkColor = topic5Color;
+const flairLinkColor = topic6Color;
 const otherLinkColor = otherColor;
 
 // Set node and link flair styles

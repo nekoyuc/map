@@ -9,9 +9,6 @@ To customize the project, match...
 
 */
 
-const topic4Name = "Makers";
-const topic5Name = "Locations";
-const topic6Name = "Flairs";
 
 function createLinkGraph() {
     let linkGraph = svg.append("g")
@@ -148,13 +145,13 @@ function updateNodeGraph(nodes) {
     //    .attr("stroke-width", 0.6)
     nodeGraph.attr("fill", d => {
         if (d.type === topic5Name) {
-            return locationsColor;
+            return topic5Color;
         } else if (d.type === topic1Name) {
             return topic1Color
         } else if (d.type === topic6Name) {
-            return flairsColor;
+            return topic6Color;
         } else if (d.type === topic4Name) {
-            return makersColor;
+            return topic4Color;
         } else if (d.type === topic2Name) {
             return topic2Color;
         } else if (d.type === topic3Name) {
@@ -410,7 +407,7 @@ function handleMouseOver(event, d) {
 function handleMouseOut(event, d) {
     d3.select(this)
         .attr("r", d => d.type === topic6Name ? flairNodeSize : d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? topicNodeSize : backgroundNodeSize)
-        .attr("fill", d => d.type === topic5Name ? locationsColor : d.type === topic1Name ? topic1Color : d.type === topic6Name ? flairsColor : d.type === topic4Name ? makersColor : d.type === topic2Name ? topic2Color : d.type === topic3Name ? topic3Color : otherColor);
+        .attr("fill", d => d.type === topic5Name ? topic5Color : d.type === topic1Name ? topic1Color : d.type === topic6Name ? topic6Color : d.type === topic4Name ? topic4Color : d.type === topic2Name ? topic2Color : d.type === topic3Name ? topic3Color : otherColor);
 
     simulation.restart(); // Resume the simulation
 
