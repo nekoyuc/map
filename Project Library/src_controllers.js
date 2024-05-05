@@ -9,7 +9,9 @@ To customize the project, match...
 
 */
 
-
+const topic4Name = "Makers";
+const topic5Name = "Locations";
+const topic6Name = "Flairs";
 
 function createLinkGraph() {
     let linkGraph = svg.append("g")
@@ -36,19 +38,19 @@ function updateNodeData(node) {
 }
 
 function updateLinkData(node) {
-    const newAuthorNames = document.getElementById(node === null ? "new-authors-input" : "authors-input").value.split(", ");
+    const newMakerNames = document.getElementById(node === null ? "new-makers-input" : "makers-input").value.split(", ");
     const newLocationNames = document.getElementById(node === null ? "new-locations-input" : "locations-input").value.split(", ");
     const newFlairNames = document.getElementById(node === null ? "new-flairs-input" : "flairs-input").value.split(", ");
 
     const nodeType = (node === null ? document.getElementById("new-type-input").value : document.getElementById("type-input").value);
 
-    // If this node already exists and is/becomes an author, remove all the links that are from the wrong group
-    if (nodeType === "Makers" && node !== null) {
-        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the author of___") || (link.target.name === node.name && link.group !== "___is the flair of___")));
+    // If this node already exists and is/becomes an maker, remove all the links that are from the wrong group
+    if (nodeType === topic4Name && node !== null) {
+        data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the maker of___") || (link.target.name === node.name && link.group !== "___is the flair of___")));
     }
 
     // If this node already exists and is/becomes a location, remove all the links that are from the wrong group
-    else if (nodeType === "Locations" && node !== null) {
+    else if (nodeType === topic5Name && node !== null) {
         data.links = data.links.filter(link => !((link.source.name === node.name && link.group !== "___is the location of___") || (link.target.name === node.name && link.group !== "___is the flair of___")));
     }
 
@@ -58,9 +60,9 @@ function updateLinkData(node) {
         if (node !== null) { data.links = data.links.filter(link => !(link.source.name === node.name || link.target.name === node.name)) };
         targetNode = (node === null ? data.nodes.find(node => node.name === document.getElementById("new-name-input").value) : node);
 
-        updateProjectLinks(newAuthorNames, "Makers", targetNode)
-        updateProjectLinks(newLocationNames, "Locations", targetNode)
-        updateProjectLinks(newFlairNames, "Flairs", targetNode)
+        updateProjectLinks(newMakerNames, topic4Name, targetNode)
+        updateProjectLinks(newLocationNames, topic5Name, targetNode)
+        updateProjectLinks(newFlairNames, topic6Name, targetNode)
     } else return;
 };
 
@@ -74,12 +76,12 @@ function updateProjectLinks(list, type, targetNode) {
             data.links.push({
                 "source": newNode,
                 "target": targetNode,
-                "group": type === "Makers" ? "___is the author of___" : type === "Locations" ? "___is the location of___" : "___is the flair of___"
+                "group": type === topic4Name ? "___is the maker of___" : type === topic5Name ? "___is the location of___" : "___is the flair of___"
             })
         }
 
         // If the node does not exist, create a new node and a new link
-        else if (window.confirm(`The ${type === "Makers" ? "author" : type === "Locations" ? "location" : "flair"} "${name.trim()}" does not exist. Do you want to create a new ${type === "Makers" ? "author" : type === "Locations" ? "location" : "flair"}?`)) {
+        else if (window.confirm(`The ${type === topic4Name ? "maker" : type === topic5Name ? "location" : "flair"} "${name.trim()}" does not exist. Do you want to create a new ${type === topic4Name ? "maker" : type === topic5Name ? "location" : "flair"}?`)) {
             data.nodes.push({
                 "name": name.trim(),
                 "type": type,
@@ -89,7 +91,7 @@ function updateProjectLinks(list, type, targetNode) {
             data.links.push({
                 "source": data.nodes.find(node => node.name === name.trim() && node.type === type),
                 "target": targetNode,
-                "group": type === "Makers" ? "___is the author of___" : type === "Locations" ? "___is the location of___" : "___is the flair of___"
+                "group": type === topic4Name ? "___is the maker of___" : type === topic5Name ? "___is the location of___" : "___is the flair of___"
             });
         }
     })
@@ -127,8 +129,8 @@ function updateLinkGraph(links) {
     //linkGraph.attr("stroke-width", linkNormalWidth)
     //.attr("stroke-opacity", linkNormalOpacity)
     linkGraph.attr("stroke", d => {
-        if (d.group === "___is the author of___") {
-            return authorLinkColor;
+        if (d.group === "___is the maker of___") {
+            return makerLinkColor;
         } else if (d.group === "___is the location of___") {
             return locationLinkColor;
         } else if (d.group === "___is the flair of___") {
@@ -145,13 +147,13 @@ function updateNodeGraph(nodes) {
     //nodeGraph.attr("stroke", "#fff")
     //    .attr("stroke-width", 0.6)
     nodeGraph.attr("fill", d => {
-        if (d.type === "Locations") {
+        if (d.type === topic5Name) {
             return locationsColor;
         } else if (d.type === topic1Name) {
             return topic1Color
-        } else if (d.type === "Flairs") {
+        } else if (d.type === topic6Name) {
             return flairsColor;
-        } else if (d.type === "Makers") {
+        } else if (d.type === topic4Name) {
             return makersColor;
         } else if (d.type === topic2Name) {
             return topic2Color;
@@ -162,7 +164,7 @@ function updateNodeGraph(nodes) {
         }
     }
     )
-        .attr("r", d => d.type === "Flairs" ? flairNodeSize : (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? topicNodeSize : backgroundNodeSize))
+        .attr("r", d => d.type === topic6Name ? flairNodeSize : (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? topicNodeSize : backgroundNodeSize))
         .call(drag(simulation))
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut);
@@ -266,17 +268,17 @@ function updateWindowAttr(d) {
     const connectedNodes = [...new Set(connectingLinks.data().flatMap(linkData => [linkData.source, linkData.target]))];
 
     if (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name) {
-        const authorNodes = connectedNodes.filter(nodeData => nodeData.type === "Makers");
-        const locationNodes = connectedNodes.filter(nodeData => nodeData.type === "Locations");
-        descripWindow.attr("window-author", authorNodes.map(nodeData => nodeData.name).join(", "));
+        const makerNodes = connectedNodes.filter(nodeData => nodeData.type === topic4Name);
+        const locationNodes = connectedNodes.filter(nodeData => nodeData.type === topic5Name);
+        descripWindow.attr("window-maker", makerNodes.map(nodeData => nodeData.name).join(", "));
         descripWindow.attr("window-location", locationNodes.map(nodeData => nodeData.name).join(", "));
     }
     else {
-        descripWindow.attr("window-author", "");
+        descripWindow.attr("window-maker", "");
         descripWindow.attr("window-location", "");
     }
 
-    const flairNodes = connectedNodes.filter(nodeData => nodeData.type === "Flairs");
+    const flairNodes = connectedNodes.filter(nodeData => nodeData.type === topic6Name);
     descripWindow.attr("window-flair", flairNodes.map(nodeData => nodeData.name).join(", "));
 }
 
@@ -285,7 +287,7 @@ function clearWindowAttr() {
     descripWindow.attr("window-url", null);
     descripWindow.attr("window-type", null);
     descripWindow.attr("window-description", null);
-    descripWindow.attr("window-author", null);
+    descripWindow.attr("window-maker", null);
     descripWindow.attr("window-location", null);
     descripWindow.attr("window-flair", null);
 }
@@ -319,7 +321,7 @@ function displayWindowEdit() {
     <br><strong style="font-family: Futura Bk BT;">Description:</strong> ${descripWindow.attr("window-description") ? `<span style="font-family: Futura Bk BT; white-space: pre-wrap;">${descripWindow.attr("window-description")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">URL:</strong> ${descripWindow.attr("window-url") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-url")}</span>` : ""}
 
-    <br><br><strong style="font-family: Futura Bk BT;">Author:</strong> ${descripWindow.attr("window-author") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-author")}</span>` : ""}
+    <br><br><strong style="font-family: Futura Bk BT;">Maker:</strong> ${descripWindow.attr("window-maker") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-maker")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Location:</strong> ${descripWindow.attr("window-location") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-location")}</span>` : ""}
     <br><strong style="font-family: Futura Bk BT;">Flairs:</strong> ${descripWindow.attr("window-flair") ? `<span style="font-family: Futura Bk BT;">${descripWindow.attr("window-flair")}</span>` : ""}
 
@@ -328,7 +330,14 @@ function displayWindowEdit() {
     <br><input type="text" id="name-input" value="${descripWindow.attr("window-name") ? descripWindow.attr("window-name") : ""}" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
 
     <br><br><strong style="font-family: Futura Bk BT;">Update type:</strong>
-    <br><input type="text" id="type-input" value="${descripWindow.attr("window-type") ? descripWindow.attr("window-type") : ""}" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
+    <br><select id="type-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
+        <option value="${topic1Name}" ${descripWindow.attr("window-type") === topic1Name ? "selected" : ""}>${topic1Name}</option>
+        <option value="${topic2Name}" ${descripWindow.attr("window-type") === topic2Name ? "selected" : ""}>${topic2Name}</option>
+        <option value="${topic3Name}" ${descripWindow.attr("window-type") === topic3Name ? "selected" : ""}>${topic3Name}</option>
+        <option value="${topic4Name}" ${descripWindow.attr("window-type") === topic4Name ? "selected" : ""}>${topic4Name}</option>
+        <option value="${topic5Name}" ${descripWindow.attr("window-type") === topic5Name ? "selected" : ""}>${topic5Name}</option>
+        <option value="${topic6Name}" ${descripWindow.attr("window-type") === topic6Name ? "selected" : ""}>${topic6Name}</option>
+    </select>
 
     <br><br><strong style="font-family: Futura Bk BT;">Update description:</strong>
     <br><textarea id="description-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;">${descripWindow.attr("window-description") ? descripWindow.attr("window-description") : ""}</textarea>
@@ -337,8 +346,8 @@ function displayWindowEdit() {
     <br><textarea id="url-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;">${descripWindow.attr("window-url") ? descripWindow.attr("window-url") : ""}</textarea>
 
 
-    <br><br><br><strong style="font-family: Futura Bk BT;">Update author:</strong>
-    <br><textarea id="authors-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">${descripWindow.attr("window-author")}</textarea>
+    <br><br><br><strong style="font-family: Futura Bk BT;">Update maker:</strong>
+    <br><textarea id="makers-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">${descripWindow.attr("window-maker")}</textarea>
 
     <br><br><strong style="font-family: Futura Bk BT;">Update location:</strong>
     <br><textarea id="locations-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">${descripWindow.attr("window-location")}</textarea>
@@ -355,7 +364,11 @@ function addNodeContent() {
     <br><textarea id="new-name-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
 
     <br><br><strong style="font-family: Futura Bk BT;">New type:</strong>
-    <br><textarea id="new-type-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
+    <br><select id="new-type-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;">
+        <option value="${topic1Name}">${topic1Name}</option>
+        <option value="${topic2Name}">${topic2Name}</option>
+        <option value="${topic3Name}">${topic3Name}</option>
+    </select>
     
     <br><br><strong style="font-family: Futura Bk BT;">New description:</strong>
     <br><textarea id="new-description-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;"></textarea>
@@ -363,8 +376,8 @@ function addNodeContent() {
     <br><br><strong style="font-family: Futura Bk BT;">New URL:</strong>
     <br><textarea id="new-url-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 80%;"></textarea>
 
-    <br><br><br><strong style="font-family: Futura Bk BT;">New author:</strong>
-    <br><textarea id="new-authors-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
+    <br><br><br><strong style="font-family: Futura Bk BT;">New maker:</strong>
+    <br><textarea id="new-makers-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
 
     <br><br><strong style="font-family: Futura Bk BT;">New location:</strong>
     <br><textarea id="new-locations-input" style="font-family: Futura Lt BT; line-height: 1.2; width: 40%;"></textarea>
@@ -380,10 +393,10 @@ function handleMouseOver(event, d) {
     updateWindowAttr(d);
 
     d3.select(this)
-        .attr("r", d => d.type === "Flairs" ? hoveredFlairNodeSize : (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? hoveredTopicNodeSize : hoveredBackgroundNodeSize))
+        .attr("r", d => d.type === topic6Name ? hoveredFlairNodeSize : (d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? hoveredTopicNodeSize : hoveredBackgroundNodeSize))
         .attr("fill", "#808080");
 
-    if (d.type !== "Flairs") {
+    if (d.type !== topic6Name) {
         updateWindowDisplay("preview")
         descripWindow.style("display", "block")
             .style("left", `${event.clientX + 30}px`)
@@ -396,8 +409,8 @@ function handleMouseOver(event, d) {
 
 function handleMouseOut(event, d) {
     d3.select(this)
-        .attr("r", d => d.type === "Flairs" ? flairNodeSize : d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? topicNodeSize : backgroundNodeSize)
-        .attr("fill", d => d.type === "Locations" ? locationsColor : d.type === topic1Name ? topic1Color : d.type === "Flairs" ? flairsColor : d.type === "Makers" ? makersColor : d.type === topic2Name ? topic2Color : d.type === topic3Name ? topic3Color : otherColor);
+        .attr("r", d => d.type === topic6Name ? flairNodeSize : d.type === topic1Name || d.type === topic2Name || d.type === topic3Name ? topicNodeSize : backgroundNodeSize)
+        .attr("fill", d => d.type === topic5Name ? locationsColor : d.type === topic1Name ? topic1Color : d.type === topic6Name ? flairsColor : d.type === topic4Name ? makersColor : d.type === topic2Name ? topic2Color : d.type === topic3Name ? topic3Color : otherColor);
 
     simulation.restart(); // Resume the simulation
 

@@ -46,7 +46,7 @@ const flairNodeSize = 6; // flairs
 const hoveredFlairNodeSize = 8;
 
 // Set the colors for different link groups
-const authorLinkColor = makersColor;
+const makerLinkColor = makersColor;
 const locationLinkColor = locationsColor;
 const flairLinkColor = flairsColor;
 const otherLinkColor = otherColor;
@@ -109,7 +109,7 @@ const descripWindow = d3.select("body")
     .attr("window-url", null)
     .attr("window-type", null)
     .attr("window-description", null)
-    .attr("window-author", null)
+    .attr("window-maker", null)
     .attr("window-location", null)
     .attr("window-flair", null)
     .style("position", "absolute")
