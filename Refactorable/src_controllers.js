@@ -2,8 +2,6 @@
 
 Functions for the controller
 
-parameters and definitions for the view elements
-
 To customize the project, match...
 - local storage name
 - downloadJSON function file name
