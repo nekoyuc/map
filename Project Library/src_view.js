@@ -32,9 +32,9 @@ const topic5Name = "Locations"; // supporting topic
 const topic6Name = "Flairs"; // supporting topic
 
 // Set the colors for different node types
-const topic1Color = "#9f4cfd"; // topic1 = architecture
-const topic2Color = "#e16be6"; // topic2 = visuals
-const topic3Color = "#f9b4ed"; // topic3 = audio
+const topic1Color = "#A3D9EB"; // topic1 = architecture
+const topic2Color = "#B5EBE7"; // topic2 = visuals
+const topic3Color = "#B5CCEB"; // topic3 = audio
 const topic4Color = "#ff924c";
 const topic5Color = "#ffca3a";
 const topic6Color = "#ff595e";
