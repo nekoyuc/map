@@ -283,7 +283,23 @@ const addNodeWindow = d3.select("body")
     .style("left", "50%")
     .style("transform", "translate(-50%, -50%)")
     .style("background-color", "#fff")
-    .style("z-index", "200");
+    .style("z-index", "200")
+    .call(d3.drag()
+        .on("start", function (event) {
+            // Compute the offset between the mouse and the element’s top-left corner.
+            const style = window.getComputedStyle(this);
+            d3.select(this)
+                .attr("data-start-x", event.x - parseFloat(style.left))
+                .attr("data-start-y", event.y - parseFloat(style.top));
+        })
+        .on("drag", function (event) {
+            const startX = +d3.select(this).attr("data-start-x");
+            const startY = +d3.select(this).attr("data-start-y");
+            d3.select(this)
+                .style("left", (event.x - startX) + "px")
+                .style("top", (event.y - startY) + "px");
+        })
+    );
 
 const newNodeContent = addNodeWindow.append("div")
     .style("padding", "10px")
