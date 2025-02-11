@@ -112,10 +112,13 @@ const descripWindow = d3.select("body")
     .attr("window-url", null)
     .attr("window-type", null)
     .attr("window-description", null)
-    .attr("window-maker", null)
+    .attr("window-author", null)
     .attr("window-location", null)
     .attr("window-flair", null)
     .style("position", "absolute")
+    // Set an initial position so that the window moves relative to that
+    .style("top", "100px")
+    .style("left", "100px")
     .style("display", "none")
     .style("width", `${descripWidth}px`)
     .style("height", `${descripHeight}px`)
@@ -123,6 +126,23 @@ const descripWindow = d3.select("body")
     .style("border-radius", "5px")
     .style("background-color", "#fff")
     .style("z-index", "100")
+    // Make the window draggable relative to the mouse position
+    .call(d3.drag()
+        .on("start", function (event) {
+            // Compute the offset between the mouse and the element’s top-left corner.
+            const style = window.getComputedStyle(this);
+            d3.select(this)
+                .attr("data-start-x", event.x - parseFloat(style.left))
+                .attr("data-start-y", event.y - parseFloat(style.top));
+        })
+        .on("drag", function (event) {
+            const startX = +d3.select(this).attr("data-start-x");
+            const startY = +d3.select(this).attr("data-start-y");
+            d3.select(this)
+                .style("left", (event.x - startX) + "px")
+                .style("top", (event.y - startY) + "px");
+        })
+    );
 
 const descripContent = descripWindow.append("div")
     .style("padding", "10px")
