@@ -407,7 +407,7 @@ function handleMouseOver(event, d) {
     if (d.type !== topic6Name) {
         updateWindowDisplay("preview")
         descripWindow.style("display", "block")
-            .style("left", `${event.clientX + 30}px`)
+            .style("left", `${event.clientX + 70}px`)
             .style("top", `${event.clientY - descripHeight / 2}px`);
         saveButton.style("display", "none");
         backButton.style("display", "none");
